@@ -1,8 +1,8 @@
+~baseDir = thisProcess.nowExecutingPath.dirname;
 (
-var baseDir = thisProcess.nowExecutingPath.dirname;
-var canon = File(baseDir++"/test.json", "r").readAllString.parseYAML;
+var canon = File(~baseDir++"/test.json", "r").readAllString.parseYAML;
 
-(baseDir++"/nanc-in-a-can/init.scd").load;
+//(~baseDir++"/nanc-in-a-can/init.scd").load;
 
 var sender = NetAddr.new("127.0.0.1", 7777);
 
