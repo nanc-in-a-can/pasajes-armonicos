@@ -1,4 +1,7 @@
+(
+s.boot;
 ~baseDir = thisProcess.nowExecutingPath.dirname;
+)
 (
 var canon = File(~baseDir++"/test.json", "r").readAllString.parseYAML;
 
@@ -12,6 +15,7 @@ canon.size.do({|voiceIndex|
 		voice.at("onset").asFloat.wait;
 		voice.at("durs").do({|dur, durIndex|
 			sender.sendMsg(\voice_event, voiceIndex, durIndex);
+			(freq: voice.at("notes")[durIndex].asFloat.midicps, dur: dur.asFloat).play;
 			dur.asFloat.wait;
 		})
 	}).play
