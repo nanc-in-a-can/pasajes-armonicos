@@ -57,6 +57,8 @@ s.boot
 						var currentIndex = voice.nextIndex;
 						var dur = voice.data.durs[currentIndex] ? inf;
 						var note = voice.data.notes[currentIndex] ? 0;
+						var hamp = harmonicAmplitude.(6, rrand(0.0, 1), currentIndex);
+						var notes = voice.data.notes[hamp[0]..hamp[1]];
 
 						// update voice state
 						voice.nextIndex = voice.nextIndex + 1;
@@ -68,9 +70,10 @@ s.boot
 						// 	{finishedCanons = finishedCanons + 1}
 					// );
 
-						if(dur != inf,
-							if(shouldPlayVoice_.(1, voice.voiceIndex), {(freq: note.midicps, dur: dur/~tempoScale).play;}),
-							{finishedCanons = finishedCanons + 1}
+						if(dur == inf,
+							{finishedCanons = finishedCanons + 1},
+							if(shouldPlayVoice_.(1, voice.voiceIndex), {(freq: notes.midicps, dur: if(dur != inf, {dur/~tempoScale}, {0})).play;})
+
 						);
 					});
 				});
