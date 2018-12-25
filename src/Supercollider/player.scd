@@ -1,12 +1,16 @@
 s.boot
-~tempoScale = 1;
-~makeTaskPlayer.(\def, ThePresetCan.pyramidCanon.canon).play
+~controls = (tempoScale: 1, hamp: 1, vdensity: 1);
+~controls.tempoScale = 1
+~controls.hamp = 0.2
+~controls.vdensity = 1
+~tempoScale = 4;
+~makeTaskPlayer.(\def, ~controls, ThePresetCan.pyramidCanon.canon).play
 (
-~makeTaskPlayer = {|def, canon|
+~makeTaskPlayer = {|def, controls, canon|
 	var makeVoicesState = {|canon|
 		(0..canon.size - 1).inject((), {|acc, i|
 			acc[i] = (
-				voiceIndex: (i - canon.size).abs,
+				voiceIndex: (i - (canon.size -1)).abs,
 				data: canon[i],
 				nextIndex: 0,
 				nextSoundAt: canon[i].onset*1000, // in ms
@@ -57,7 +61,7 @@ s.boot
 						var currentIndex = voice.nextIndex;
 						var dur = voice.data.durs[currentIndex] ? inf;
 						var note = voice.data.notes[currentIndex] ? 0;
-						var hamp = harmonicAmplitude.(6, rrand(0.0, 1), currentIndex);
+						var hamp = harmonicAmplitude.(6, controls.hamp, currentIndex);
 						var notes = voice.data.notes[hamp[0]..hamp[1]];
 
 						// update voice state
@@ -72,7 +76,7 @@ s.boot
 
 						if(dur == inf,
 							{finishedCanons = finishedCanons + 1},
-							if(shouldPlayVoice_.(1, voice.voiceIndex), {(freq: notes.midicps, dur: if(dur != inf, {dur/~tempoScale}, {0})).play;})
+							if(shouldPlayVoice_.(controls.vdensity, voice.voiceIndex), {(freq: notes.midicps, dur: if(dur != inf, {dur/controls.tempoScale}, {0})).play;})
 
 						);
 					});
@@ -84,7 +88,7 @@ s.boot
 
 			if(finishedCanons == numVoices, {player.stop});
 
-			elapsed = elapsed+(1*~tempoScale); // update elapsed time, ~tempoScale changes the value by which `elapsed` is updated, by this, the "interal time of the canon" go faster or slower.  If ~tempoScale is > 1 it goes faster than it's original tempo, if < 1 it goes slower.
+			elapsed = elapsed+(1*controls.tempoScale); // update elapsed time, ~tempoScale changes the value by which `elapsed` is updated, by this, the "interal time of the canon" go faster or slower.  If ~tempoScale is > 1 it goes faster than it's original tempo, if < 1 it goes slower.
 
 			0.001.wait; // iterate every 1ms
 		})
