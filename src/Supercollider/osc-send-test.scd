@@ -1,30 +1,42 @@
+~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
+
 (
 s.boot;
 ~baseDir = thisProcess.nowExecutingPath.dirname;
 )
 (
 var canon = File(~baseDir++"/test.json", "r").readAllString.parseYAML;
+var r = {rrand(0.0, 1)};
 
 //(~baseDir++"/nanc-in-a-can/init.scd").load;
 
 var sender = NetAddr.new("127.0.0.1", 7777);
-
-canon.size.do({|voiceIndex|
-	var voice = canon[voiceIndex];
 	Task({
-		voice.at("onset").asFloat.wait;
-		voice.at("durs").do({|dur, durIndex|
-			sender.sendMsg(\voice_event, voiceIndex, durIndex);
-			(freq: voice.at("notes")[durIndex].asFloat.midicps, dur: dur.asFloat).play;
-			dur.asFloat.wait;
+		inf.do({
+		    var x = r.();
+		    var y = r.();
+		    var z = r.();
+			sender.sendMsg(\dirxyz, x, y, z);
+			1.wait;
 		})
-	}).play
-})
+	}).play;
+thisProcess.openUDPPort(7777);
+thisProcess.openPorts;
+OSCFunc.trace(false);
+o.free;o = OSCFunc({
+	|msg|
+	var x, y, z;
+	x = msg[1];
+	y = msg[2];
+	z = msg[3];
+	~controls.vdensity = y;
+	~controls.hamp = x;
+	~controls.tempoScale = z.linlin(0, 1, 0.1, 4);
+	~controls.postln;
+}, \dirxyz,   recvPort: 7777)
 )
 
-//para probar la recepción
-// thisProcess.openUDPPort(7777);
-// thisProcess.openPorts
-// o.free;o = OSCFunc({|msg| msg.postln}, \foo,   recvPort: 7777)
-// OSCFunc.trace(true);
 
+
+
+0.1

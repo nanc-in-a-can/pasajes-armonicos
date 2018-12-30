@@ -60,7 +60,6 @@ s.boot
 					if(voice.nextSoundAt <= elapsed, { // check if `voice` shouldPlay it's next sound
 						var currentIndex = voice.nextIndex;
 						var dur = voice.data.durs[currentIndex] ? inf;
-						var note = voice.data.notes[currentIndex] ? 0;
 						var hamp = harmonicAmplitude.(6, controls.hamp, currentIndex);
 						var notes = voice.data.notes[hamp[0]..hamp[1]];
 
