@@ -1,7 +1,7 @@
 (
 var path = thisProcess.nowExecutingPath.dirname++"/samples";
 
-w= [
+~samples = [
 	SoundFile.collectIntoBuffers(path++"/wavetable/*",s),
 	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF/*",s),
 	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_aguitar/*",s),

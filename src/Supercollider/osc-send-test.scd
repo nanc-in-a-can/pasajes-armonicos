@@ -1,11 +1,5 @@
-~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
 
 (
-s.boot;
-~baseDir = thisProcess.nowExecutingPath.dirname;
-)
-(
-var canon = File(~baseDir++"/test.json", "r").readAllString.parseYAML;
 var r = {rrand(0.0, 1)};
 
 //(~baseDir++"/nanc-in-a-can/init.scd").load;
@@ -37,6 +31,3 @@ o.free;o = OSCFunc({
 )
 
 
-
-
-0.1

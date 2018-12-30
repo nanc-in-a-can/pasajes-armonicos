@@ -1,19 +1,22 @@
 (
-s.options.numBuffers = 1024 * 16;
+s.options.numBuffers = 1024 * 32;
 Can.defaultServerConfig;
 s.boot;
 s.waitForBoot({
-	var baseDir = thisProcess.nowExecutingPath.dirname;
-	(baseDir++"/wavetable_Soundfiles.scd").load;
-	(baseDir++"/synths.scd").load;
-	(baseDir++"/player_withSynths.scd").load;
+	~baseDir = thisProcess.nowExecutingPath.dirname;
+	(~baseDir++"/wavetable_Soundfiles.scd").load;
+	(~baseDir++"/synths.scd").load;
+	(~baseDir++"/player_withSynths.scd").load;
 })
 );
-//~controls = (tempoScale: 1, hamp: 1, vdensity: 1);
+
+(~baseDir++"/osc-send-test.scd").load;
+
+~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
 //~controls.tempoScale = 1.0;
 //~controls.hamp = 0.1;
 //~controls.vdensity = 0.5;
-
+().play
 ( // canon // still not sure how to work with this //
 var densityOfVoices = [5, 10, 20, 30].choose;
 var sizeOfMelody = [30,50,80].choose;
@@ -32,7 +35,7 @@ var sizeOfMelody = [30,50,80].choose;
 	repeat: inf)
 );
 
-//~a.play
+// ~a.play
 
 
 (
