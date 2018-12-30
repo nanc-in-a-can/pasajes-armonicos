@@ -19,6 +19,9 @@ SynthDef(\pasajesWavtab, {
 	sig = VOsc3.ar(ibuf+Line.kr(1,3,sust), pitch+[0,1],pitch+[0.37,1.1],pitch+[0.43, -0.29], 0.25);
 	sig= sig + RLPF.ar(BPF.ar(Crackle.ar(0.1,1000), pitch*Line.kr(1,3.5,sust), rq).distort.distort, freq*8*Line.kr(0.75, 1, sust*8), 0.01);
 
-	Out.ar(out, sig*env*amp);
+	Out.ar(
+		out,
+		Limiter.ar(sig*env*amp, 2) //TODO es provisional, quitar
+	);
 }).add;
 )
