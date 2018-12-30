@@ -1,0 +1,55 @@
+(
+var path = thisProcess.nowExecutingPath.dirname++"/samples";
+
+w= [
+	SoundFile.collectIntoBuffers(path++"/wavetable/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_aguitar/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF/_altosax*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_birds/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bitreduced/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_blended/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_saw/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_sawbright/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_sawgap/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_sawrounded/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_sin/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_sq/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_sqrounded/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_tri/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_c604/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_bw_cello/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_clarinett/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_cavinet/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_dbass/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_distorted/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_ebass/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_eguitar/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_eorgan/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_epiano/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_flute/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_fmsynth/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_granular/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_hdrawn/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_hvoice/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_linear/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_oboe/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_oscchip/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_overtone/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_piano/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_pluckalgo/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_raw/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_sinharm/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_snippets/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_stereo/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_stringbox/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_symetric/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_theremin/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_vgame/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_vgamebasic/*",s),
+	SoundFile.collectIntoBuffers(path++"/wavetable_catalogue/normalised/AKWF_violin/*",s)
+
+].flatten;
+
+)
+
