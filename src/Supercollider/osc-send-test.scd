@@ -27,3 +27,4 @@ canon.size.do({|voiceIndex|
 // thisProcess.openPorts
 // o.free;o = OSCFunc({|msg| msg.postln}, \foo,   recvPort: 7777)
 // OSCFunc.trace(true);
+
