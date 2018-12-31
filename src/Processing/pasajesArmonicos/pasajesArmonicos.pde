@@ -96,7 +96,7 @@ void draw() {
   sliderCurrZ = sliderZ.getValue();
   
   if (sliderPrevX != sliderCurrX || sliderPrevY != sliderCurrY || sliderPrevZ != sliderCurrZ) {
-    sendValues("dirxyz", sliderCurrX, sliderCurrY, sliderCurrZ);
+    sendValues("/dirxyz", sliderCurrX, sliderCurrY, sliderCurrZ);
     println("sent values "+ sliderCurrX+" "+sliderCurrY+" "+sliderCurrZ);
   }
 }
