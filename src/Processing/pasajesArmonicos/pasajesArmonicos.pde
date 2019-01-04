@@ -15,6 +15,9 @@ NetAddress myRemoteLocation;
 String strIP = "127.0.0.1";
 String strPort = "32000";
 
+String msg = "/dirxyz";
+  
+
 //slider vaues
 float sliderPrevX = 0.0;
 float sliderPrevY = 0.0;
@@ -52,7 +55,7 @@ void setup() {
   ///////////////////////////////////////////////////////
 
   cp5.addTextlabel("OSC Message")
-    .setText("OSC Message")
+    .setText("OSC Message "+msg)
     .setPosition(250, 50)
     .setColorValue(0xffffffff);
 
@@ -95,9 +98,10 @@ void draw() {
   sliderCurrY = sliderXY.getArrayValue()[1];
   sliderCurrZ = sliderZ.getValue();
   
+
   if (sliderPrevX != sliderCurrX || sliderPrevY != sliderCurrY || sliderPrevZ != sliderCurrZ) {
-    sendValues("dirxyz", sliderCurrX, sliderCurrY, sliderCurrZ);
-    println("sent values "+ sliderCurrX+" "+sliderCurrY+" "+sliderCurrZ);
+    sendValues(msg, sliderCurrX, sliderCurrY, sliderCurrZ);
+    println("sent values "+msg+"  "+ sliderCurrX+" "+sliderCurrY+" "+sliderCurrZ);
   }
 }
 
