@@ -25,7 +25,7 @@ o.free;o = OSCFunc({
 	z = msg[3];
 	~controls.vdensity = y;
 	~controls.hamp = x;
-	~controls.tempoScale = z.linlin(0, 1, 0.1, 4);
+	~controls.tempoScale = z.linlin(0, 1, 0.1, 2);
 	~controls.postln;
 }, \dirxyz,   recvPort: 7777)
 )
