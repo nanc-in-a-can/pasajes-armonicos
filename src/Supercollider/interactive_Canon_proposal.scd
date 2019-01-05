@@ -101,7 +101,22 @@ p = OSCdef(\xy, {|msg, time, addr, recvPort| [msg[0],msg[1],msg[2]].postln;
 
 
 
-
+(//recieve xyz data from Processing
+thisProcess.openUDPPort(32000);
+thisProcess.openPorts;
+OSCFunc.trace(false);
+o.free;o = OSCFunc({
+	|msg|
+	var x, y, z;
+	x = msg[1];
+	y = msg[2];
+	z = msg[3];
+	~controls.vdensity = y;
+	~controls.hamp = x;
+	~controls.tempoScale = z.linlin(0, 1, 0.1, 2);
+	~controls.postln;
+}, \dirxyz,   recvPort: 32000)
+)
 
 
 
