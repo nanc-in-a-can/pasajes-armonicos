@@ -33,7 +33,10 @@ void setup() {
 void draw() {
   background(0);
   
-  text(msg, 20, 20);
+  text("raw", 20, 30);
+  text(raw, 20, 50);
+  text("msg:", 20, 90);
+  text(msg, 20, 120);
 }
 
 void mousePressed() {
