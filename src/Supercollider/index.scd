@@ -7,29 +7,30 @@ s.waitForBoot({
 	(~baseDir++"/wavetable_Soundfiles.scd").load;
 	(~baseDir++"/synths.scd").load;
 	(~baseDir++"/player_withSynths.scd").load;
+	(~baseDir++"/helpers.scd").load;
+	(~baseDir++"/interfaces/code-test.scd").load;
 
 	//init controls
 	~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
 })
 );
 
+~controls
 
 ( // canon // still not sure how to work with this //
-var densityOfVoices = [5, 10, 20, 30].choose;
+var densityOfVoices = [30].choose;
 var sizeOfMelody = [30,50,80].choose;
 
 var canon = Can.converge(\myLiveCan,
 	player: {|sym, canon|
 		~makeTaskPlayer.(sym, ~controls, canon)},
-	melody: Can.melody(
-		Array.fill(sizeOfMelody, { [8,16,4,6,12].reciprocal.choose }),
-		Array.fill(sizeOfMelody, { [60,67,68,72,75,55,56,53].choose })),
-	cp: (sizeOfMelody/2).round,
+	melody: ~makeMelody.(sizeOfMelody, ~pasaje),
+	cp: sizeOfMelody - 1,
 	voices: Can.convoices(
-		Array.fill(densityOfVoices, { rrand(75, 95)/20 }),
-		Array.fill(densityOfVoices, { rrand(-24, 12) }),
-		Array.fill(densityOfVoices, { rrand(0.1, 1.0) }) ),
-	repeat: inf);
+		Array.fill(densityOfVoices, { rrand(75, 95) }).sort,
+		Array.fill(densityOfVoices, { rrand(-24, 12) }).sort,
+		Array.fill(densityOfVoices, { rrand(0.1, 1.0) }).sort),
+	repeat: 1);
 
 var net = NetAddr.new("127.0.0.1", 32001);   // send canon json to localhost:32001
 var jsonpath = (~baseDir++"/../JSONs/canon.json");
@@ -78,4 +79,12 @@ p = OSCFunc({
 (//test to play canon
 b = NetAddr.new("127.0.0.1", 32000);    // create the NetAddr
 b.sendMsg("/play");
+)
+
+(
+thisProcess.openUDPPort(32001);
+p = OSCFunc({
+	|msg|
+	msg.postln;
+}, \voice_event,   recvPort: 32001)
 )

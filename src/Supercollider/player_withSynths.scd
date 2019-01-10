@@ -41,6 +41,8 @@
 		[first, last];
 	};
 
+	var net = NetAddr.new("127.0.0.1", 32001);
+
 	var player = Tdef(def, {
 		var elapsed = 0;
 		var voicesState = makeVoicesState.(canon);
@@ -48,6 +50,7 @@
 		var numVoices = canon.size;
 		var finishedCanons = 0;
 		var globalNextSoundAt = 0;
+		var scale = ~getScale.(108, rrand(0,108));
 		inf.do({|i|
 			var iterateVoices = globalNextSoundAt <= elapsed;
 
@@ -61,7 +64,7 @@
 						var currentIndex = voice.nextIndex;
 						var dur = voice.data.durs[currentIndex] ? inf;
 						var note = voice.data.notes[currentIndex] ? 0;
-						var hamp = harmonicAmplitude.(6, controls.hamp, currentIndex);
+						var hamp = harmonicAmplitude.(3, controls.hamp, currentIndex);
 						var notes = voice.data.notes[hamp[0]..hamp[1]];
 
 						// update voice state
@@ -77,9 +80,33 @@
 						if(dur == inf,
 							{finishedCanons = finishedCanons + 1},
 							if(shouldPlayVoice_.(controls.vdensity, voice.voiceIndex), {
-		(instrument: \pasajesPluck, freq: notes.midicps, dur: if(dur != inf, {dur/controls.tempoScale}, {0})).play;
+								var minNote = if(notes.isArray, {notes.minItem}, {notes}) ? 0;
+								var freq = scale.degreeToFreq(
+									minNote%scale.pitchesPerOctave,
+									20,
+									(minNote/scale.pitchesPerOctave).asInteger
+								);
 
-							(instrument: \pasajesWavtab, freq: notes.midicps, dur: if(dur != inf, {dur/controls.tempoScale}, {0}), sust: if(dur != inf, {dur/controls.tempoScale}, {0}), ibuf: rrand(0,4000), amp: 0.1).play;
+								(
+									instrument: \pasajesPluck,
+									freq: freq,
+									dur: if(dur != inf, {dur/controls.tempoScale}, {0})
+								).play;
+
+								(
+									instrument: \pasajesWavtab,
+									freq: freq,
+									dur: if(dur != inf, {dur/controls.tempoScale}, {0}),
+									sust: if(dur != inf, {dur/controls.tempoScale}, {0}),
+									ibuf: rrand(0,4000),
+									amp: 0.1
+								).play;
+
+								net.sendMsg("/voice_event",
+									voice.voiceIndex,
+									dur,
+									note
+								);
 
 							})
 
@@ -101,3 +128,4 @@
 	player;
 };
 )
+
