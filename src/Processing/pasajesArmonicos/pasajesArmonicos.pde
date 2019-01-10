@@ -16,7 +16,7 @@ String strIP = "127.0.0.1";
 String strPort = "32000";
 
 String msg = "/dirxyz";
-  
+
 
 //slider vaues
 float sliderPrevX = 0.0;
@@ -93,15 +93,25 @@ void draw() {
   sliderPrevX = sliderCurrX;
   sliderPrevY = sliderCurrY;
   sliderPrevZ = sliderCurrZ;
-  
+
   sliderCurrX = sliderXY.getArrayValue()[0];
   sliderCurrY = sliderXY.getArrayValue()[1];
   sliderCurrZ = sliderZ.getValue();
-  
+
 
   if (sliderPrevX != sliderCurrX || sliderPrevY != sliderCurrY || sliderPrevZ != sliderCurrZ) {
     sendValues(msg, sliderCurrX, sliderCurrY, sliderCurrZ);
     println("sent values "+msg+"  "+ sliderCurrX+" "+sliderCurrY+" "+sliderCurrZ);
+  }
+}
+
+void keyPressed() {
+  if (key == 'a') {
+    OscMessage myMessage = new OscMessage("/play");
+    myMessage.add(1);
+    /* send the message */
+    oscP5.send(myMessage, myRemoteLocation);
+    println("send /play 1");
   }
 }
 
