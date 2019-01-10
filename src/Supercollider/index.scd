@@ -15,8 +15,6 @@ s.waitForBoot({
 })
 );
 
-~controls
-
 ( // canon // still not sure how to work with this //
 var densityOfVoices = [30].choose;
 var sizeOfMelody = [30,50,80].choose;
@@ -27,9 +25,9 @@ var canon = Can.converge(\myLiveCan,
 	melody: ~makeMelody.(sizeOfMelody, ~pasaje),
 	cp: sizeOfMelody - 1,
 	voices: Can.convoices(
-		Array.fill(densityOfVoices, { rrand(75, 95) }).sort,
-		Array.fill(densityOfVoices, { rrand(-24, 12) }).sort,
-		Array.fill(densityOfVoices, { rrand(0.1, 1.0) }).sort),
+		Array.fill(densityOfVoices, { rrand(75, 95) }),
+		Array.fill(densityOfVoices, { rrand(-24, 12) }),
+		Array.fill(densityOfVoices, { rrand(0.1, 1.0) })),
 	repeat: 1);
 
 var net = NetAddr.new("127.0.0.1", 32001);   // send canon json to localhost:32001
@@ -40,8 +38,6 @@ f.close;
 net.sendMsg("/json", jsonpath);
 ~canon = canon;
 );
-
-
 
 (//Processing should send a message to /play @ localhost:32000 to trigger playback
 thisProcess.openUDPPort(32000);
@@ -73,18 +69,4 @@ p = OSCFunc({
 	~controls.tempoScale = z.linlin(0, 1, 0.1, 2);
 	~controls.postln;
 }, \dirxyz,   recvPort: 32000)
-)
-
-
-(//test to play canon
-b = NetAddr.new("127.0.0.1", 32000);    // create the NetAddr
-b.sendMsg("/play");
-)
-
-(
-thisProcess.openUDPPort(32001);
-p = OSCFunc({
-	|msg|
-	msg.postln;
-}, \voice_event,   recvPort: 32001)
 )
