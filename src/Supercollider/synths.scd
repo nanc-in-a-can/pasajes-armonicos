@@ -18,7 +18,7 @@ SynthDef(\pasajesWavtab, {
 	env = EnvGen.ar(Env([0,1,1,0],[att,sust,rel]),gate, doneAction:2);
 	pitch = freq;
 	sig1 = VOsc3.ar(ibuf+Line.kr(1,3,sust), pitch+[0,1],pitch+[0.37,1.1],pitch+[0.43, -0.29], 0.25);
-	sig2= sig1 + RLPF.ar(BPF.ar(Crackle.ar(TExpRand.kr(0.1, 1.2, Dust.kr(0.1)),1000), pitch*Line.kr(1,3.5,sust), rq).distort.distort, freq*8*Line.kr(0.998, 0.999, sust*10), 0.01);
+	sig2= sig1 + RLPF.ar(BPF.ar(Crackle.ar(TExpRand.kr(0.1, 1.2, Dust.kr(0.1)),1000), pitch*Line.kr(1,3.5,sust), rq).distort.distort, freq*8*Line.kr(0.990, 0.999, sust*10), 0.01);
 	sig= Select.ar(which, [sig1, sig2]);
 
 	// out mixer
