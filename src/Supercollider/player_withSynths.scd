@@ -92,7 +92,8 @@
 									sust: if(dur != inf, {dur/controls.tempoScale}, {0}),
 									ibuf: rrand(0,4000),
 									amp: 0.1,
-									out: 48
+									out: 48,
+									which: [0,1].wchoose([15,1].normalizeSum) /*aqui se le cambia la posibilidad de escuchar el glissando, ahora esta 15 contra 1*/
 								).play;
 
 								net.sendMsg("/voice_event",

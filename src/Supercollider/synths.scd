@@ -13,17 +13,19 @@ SynthDef(\pasajesPluck, {| freq=220, coef=0.9, amp=1, pan=0, out=0, dur=0 |
 
 (
 SynthDef(\pasajesWavtab, {
-	| freq=60, ibuf= 0, offset=0.65, out=48, att=0.05, sust=1, rel=0.5, gate=1, amp=0.0001, rq=0.01, outSpace=48 |
-	var sig, pitch, env;
+	| freq=200, ibuf= 0, offset=0.65, out=48, att=0.05, sust=1, rel=0.5, gate=1, amp=0.1, rq=0.01, which=0|
+	var sig, sig1, sig2, pitch, env;
 	env = EnvGen.ar(Env([0,1,1,0],[att,sust,rel]),gate, doneAction:2);
 	pitch = freq;
-	sig = VOsc3.ar(ibuf+Line.kr(1,3,sust), pitch+[0,1],pitch+[0.37,1.1],pitch+[0.43, -0.29], 0.25);
-	sig= sig/* + RLPF.ar(BPF.ar(Crackle.ar(TExpRand.kr(0.6, 1.2, Dust.kr(10)),1000), pitch*Line.kr(1,3.5,sust), rq).distort.distort, freq*8*Line.kr(0.995, 0.999, sust*8), 0.1)*0.05*/;
+	sig1 = VOsc3.ar(ibuf+Line.kr(1,3,sust), pitch+[0,1],pitch+[0.37,1.1],pitch+[0.43, -0.29], 0.25);
+	sig2= sig1 + RLPF.ar(BPF.ar(Crackle.ar(TExpRand.kr(0.1, 1.2, Dust.kr(0.1)),1000), pitch*Line.kr(1,3.5,sust), rq).distort.distort, freq*8*Line.kr(0.998, 0.999, sust*10), 0.01);
+	sig= Select.ar(which, [sig1, sig2]);
 
 	// out mixer
 	Out.ar([out, 8, 10],sig*env*amp);
 }).add;
 );
+
 
 (
 // mezcladora // canal 99
