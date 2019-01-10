@@ -16,19 +16,19 @@ s.waitForBoot({
 );
 
 ( // canon // still not sure how to work with this //
-var densityOfVoices = [30].choose;
+var densityOfVoices = [5, 10, 20, 30].choose;
 var sizeOfMelody = [30,50,80].choose;
 
 var canon = Can.converge(\myLiveCan,
 	player: {|sym, canon|
 		~makeTaskPlayer.(sym, ~controls, canon)},
 	melody: ~makeMelody.(sizeOfMelody, ~pasaje),
-	cp: sizeOfMelody - 1,
+	cp: (sizeOfMelody/2).round,
 	voices: Can.convoices(
-		Array.fill(densityOfVoices, { rrand(75, 95) }),
+		Array.fill(densityOfVoices, { rrand(75, 95)/2 }),
 		Array.fill(densityOfVoices, { rrand(-24, 12) }),
-		Array.fill(densityOfVoices, { rrand(0.1, 1.0) })),
-	repeat: 1);
+		Array.fill(densityOfVoices, { rrand(0.1, 1.0) }) ),
+	repeat: inf);
 
 var net = NetAddr.new("127.0.0.1", 32001);   // send canon json to localhost:32001
 var jsonpath = (~baseDir++"/../JSONs/canon.json");

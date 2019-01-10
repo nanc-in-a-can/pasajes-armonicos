@@ -25,12 +25,12 @@
 			var shouldAdd = pasaje[key].isNumber || pasaje[key].isString || pasaje[key].isSymbolWS;
 			if(shouldAdd, {acc.add(pasaje[key])}, {acc})
 		})
-		.collect({|val| ((if(val.isNumber, {val.min(127)}, {val.ascii}) - 60)*0.7)})
+		.collect({|val| if(val.isNumber, {val.min(127)}, {val.ascii})})
 		.flatten;
 
 		var avg = notesSeq.sum/notesSeq.size;
 		// var notesSeq_ = notesSeq.
-		var notesSeq_ = (notesSeq + notesSeq.minItem.abs).round;
+		var notesSeq_ = (notesSeq + notesSeq.minItem.abs).round.collect(_.linlin(0, 127, 53, 75));
 
 		minSize.collect(notesSeq_.wrapAt(_))
 	};
