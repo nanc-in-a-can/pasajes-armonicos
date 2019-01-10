@@ -103,9 +103,9 @@
 								).play;
 
 								net.sendMsg("/voice_event",
-									voice.voiceIndex,
-									dur,
-									note
+									*[voice.voiceIndex,
+										dur]
+									++ if(notes.isArray, {notes}, {[notes]})
 								);
 
 							})
