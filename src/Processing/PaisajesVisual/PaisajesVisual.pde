@@ -24,31 +24,47 @@ PGraphics pg;
 PFont font;
 
 //
+ArrayList<Canon> canons;
+
 void setup() {
   size(1024, 768);
   frameRate(60);
-  
+
+  //setup canons
+  canons = new ArrayList<Canon>();
+  loadJson(jsonPath);
+
   font = createFont("Inconsolata.otf", 12, true);
-  
+
   //PGraphics
   pg = createGraphics(1024, 768); 
-  
+
   //setupIMU
   setupIMU();
-  
+
   //Port
   setupPort();
-  
+
   //setup OSC
   oscSetup();
-  
 }
 
 
 void draw() {
   background(0);
-  
-  
+
+
   displayData();
   image(pg, 0, 0);
+}
+
+void keyPressed() {
+  if (key == 'a') {
+    loadJson(jsonPath);
+  }
+  
+  if(key == 'r'){
+   sendRead();
+   println("send ready");
+  }
 }
