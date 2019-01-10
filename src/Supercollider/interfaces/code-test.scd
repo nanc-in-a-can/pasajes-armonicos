@@ -1,8 +1,12 @@
 (
 ~pasaje = (//add your data to initialize the instalation
+	//any key containing the string rhythms (i.e. rhythms1, myrhythms) and having an array of numbers as a value will bie used to generate rhythmic values
 	nationality: \mexico,
 	age: 33, // any number
-	badInput: [23, 4],
+	melodicThing: ([60, 63, 67]!10).flatten,
+	rhythms: [1/4, 1/5, 1/4],
+	rhythms2: (([1/4, 1/5, 1/4]*7/8)!3).flatten,
+	rhythms3: "badInput",
 	hugeNumber: 5,
 	gender: \shouffsdfasdfasdfldntcare,
 	wtf: "I'm \nbluasdfasdfae",
