@@ -34,3 +34,5 @@ o.free;o = OSCFunc({
 ~controls.tempoScale = 1;
 ~controls.hamp = 0;
 Scale.major.degreeToFreq([7, 8], 60, 1)
+
+s.plotTree

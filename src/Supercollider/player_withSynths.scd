@@ -91,7 +91,8 @@
 									dur: if(dur != inf, {dur/controls.tempoScale}, {0}),
 									sust: if(dur != inf, {dur/controls.tempoScale}, {0}),
 									ibuf: rrand(0,4000),
-									amp: 0.1
+									amp: 0.1,
+									out: 48
 								).play;
 
 								net.sendMsg("/voice_event",
