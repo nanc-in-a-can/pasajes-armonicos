@@ -56,6 +56,6 @@ Visual
 
 void visualizeCanon(){
   for(Canon can : canons){
-    can
+    
   }
 }

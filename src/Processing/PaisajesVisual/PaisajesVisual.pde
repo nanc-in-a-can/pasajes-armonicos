@@ -53,8 +53,12 @@ void setup() {
 void draw() {
   background(0);
 
-
+  //input data
   displayData();
+  
+  //canon
+  visualizeCanon();
+  
   image(pg, 0, 0);
 }
 
