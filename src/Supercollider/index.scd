@@ -63,10 +63,18 @@ p = OSCFunc({
 	z = msg[3];
 	~combC2.set(\delayTime, z.explin(0.000001,1, 0.01, 0.002));
 	~combC1.set(\delayTime, y.explin(0.000001,1, 0.01, 0.001));
-	~pan.set(\pos, x.linlin(0,1, 0, 4));
+	~pan.set(\pos1, x.linlin(0,1, 0, 4), \pos2, y.linlin(0,1, 0, 3), \pos3, z.linlin(0,1, 0, 3.5));
 	~controls.vdensity = y;
 	~controls.hamp = x;
 	~controls.tempoScale = z.linlin(0, 1, 0.1, 2);
 	~controls.postln;
 }, \dirxyz,   recvPort: 32000)
 )
+
+//~netAddr= NetAddr("127.0.0.1", 32000);
+
+//~netAddr.sendMsg('/play')
+
+//s.meter
+
+// s.plotTree;
