@@ -20,15 +20,20 @@ void setupPort() {
   if (serialConfig != null && serialConfig.length > 0) {
     String savedPort = serialConfig[0];
     println("read: "+savedPort);
-    port = new Serial(this, savedPort, 115200);
-    port.bufferUntil('\n');
-    // Check if saved port is in available ports.
-    for (int i = 0; i < availablePorts.length; ++i) {
-      if (availablePorts[i].equals(savedPort)) {
-        selectedPort = i;
+    try {
+      port = new Serial(this, savedPort, 115200);
+      port.bufferUntil('\n');
+      // Check if saved port is in available ports.
+      for (int i = 0; i < availablePorts.length; ++i) {
+        if (availablePorts[i].equals(savedPort)) {
+          selectedPort = i;
+        }
       }
     }
+    catch(Exception e) {
+    }
   }
+
   println();
 }
 
