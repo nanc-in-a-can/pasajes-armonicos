@@ -50,7 +50,6 @@
 		var numVoices = canon.size;
 		var finishedCanons = 0;
 		var globalNextSoundAt = 0;
-		var scale = ~getScale.(108, rrand(0,108));
 		inf.do({|i|
 			var iterateVoices = globalNextSoundAt <= elapsed;
 
@@ -80,22 +79,15 @@
 						if(dur == inf,
 							{finishedCanons = finishedCanons + 1},
 							if(shouldPlayVoice_.(controls.vdensity, voice.voiceIndex), {
-								var minNote = if(notes.isArray, {notes.minItem}, {notes}) ? 0;
-								var freq = scale.degreeToFreq(
-									minNote%scale.pitchesPerOctave,
-									20,
-									(minNote/scale.pitchesPerOctave).asInteger
-								);
-
 								(
 									instrument: \pasajesPluck,
-									freq: freq,
+									freq: notes.midicps,
 									dur: if(dur != inf, {dur/controls.tempoScale}, {0})
 								).play;
 
 								(
 									instrument: \pasajesWavtab,
-									freq: freq,
+									freq: notes.midicps,
 									dur: if(dur != inf, {dur/controls.tempoScale}, {0}),
 									sust: if(dur != inf, {dur/controls.tempoScale}, {0}),
 									ibuf: rrand(0,4000),
