@@ -45,6 +45,10 @@ net.sendMsg("/json", jsonpath);
 (//Processing should send a message to /play @ localhost:32000 to trigger playback
 thisProcess.openUDPPort(32000);
 o = OSCFunc({
+	~mixer= Synth(\mixer_Pasajes);
+	~pan= Synth(\pasajes_PanAz);
+	~combC1= Synth(\pasajes_combC1, [\amp, 1.5]); // aqui se le puede mover a la amp antes de inicializar la chingadera si es necesario;
+	~combC2= Synth(\pasajes_combC2, [\amp, 1.5]);
 	~canon.play
 }, \play,   recvPort: 32000);
 )
@@ -60,6 +64,9 @@ p = OSCFunc({
 	x = msg[1];
 	y = msg[2];
 	z = msg[3];
+	~combC2.set(\delayTime, z.explin(0.000001,1, 0.01, 0.002));
+	~combC1.set(\delayTime, y.explin(0.000001,1, 0.01, 0.001));
+	~pan.set(\pos, x.linlin(0,1, 0, 4));
 	~controls.vdensity = y;
 	~controls.hamp = x;
 	~controls.tempoScale = z.linlin(0, 1, 0.1, 2);
