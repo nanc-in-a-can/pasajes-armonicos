@@ -41,6 +41,12 @@ void oscEvent(OscMessage theOscMessage) {
 
     loadJson(jsonPath);
     //load json
-    
+  }
+  
+  if (theOscMessage.checkAddrPattern("/voice_event")==true) {
+    //index, dur, note
+    println(theOscMessage.get(0).intValue()+" "+theOscMessage.get(0).floatValue()+" "+theOscMessage.get(0).floatValue());
   }
 }
+
+//voices event
