@@ -1,8 +1,7 @@
 ~registerOsc = {|canon|
 	//Processing should send a message to /play @ localhost:32000 to trigger playback
 	thisProcess.openUDPPort(32000);
-	o.free;
-	o = OSCFunc({
+	OSCFunc({
 		canon.play
 	}, \play,   recvPort: 32000);
 
@@ -10,8 +9,7 @@
 	thisProcess.openUDPPort(32000);
 	thisProcess.openPorts;
 	OSCFunc.trace(false);
-	p.free;
-	p = OSCFunc({
+	OSCFunc({
 		|msg|
 		var x, y, z;
 		x = msg[1];
