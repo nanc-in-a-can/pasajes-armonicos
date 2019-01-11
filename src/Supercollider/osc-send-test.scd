@@ -1,7 +1,7 @@
 ( //to play
 var net = NetAddr("127.0.0.1", 32000);
-~makeCanon.();
-net.sendMsg('/play');
+// ~makeCanon.();
+NetAddr("127.0.0.1", 32000).sendMsg('/play');
 )
 
 

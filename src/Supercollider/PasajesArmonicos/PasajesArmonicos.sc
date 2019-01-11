@@ -1,4 +1,19 @@
 PasajesArmonicos {
+	var <>pasaje;
+
+	register_ {|val|
+		^pasaje = val;
+	}
+
+	getPasaje {
+		^pasaje;
+	}
+
+	play {
+		// a /play message is required at port 32000 to initialize playback
+		~makeCanon.(this.getPasaje);
+	}
+
 	*initialize {|dirname|
 		var s = Server.local;
 		s.options.numBuffers = 1024 * 32;
@@ -16,10 +31,10 @@ PasajesArmonicos {
 			//init controls
 			~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
 
-			~makeCanon = {
+			~makeCanon = {|pasaje|
 				var densityOfVoices = [20].choose;
 				var sizeOfMelody = [30,50,80].choose;
-				var melody = ~makeMelody.(sizeOfMelody, ~pasaje);
+				var melody = ~makeMelody.(sizeOfMelody, pasaje);
 				var canon = Can.converge(\myLiveCan,
 					player: {|sym, canon|
 						~makeTaskPlayer.(sym, ~controls, canon)},
@@ -46,7 +61,8 @@ PasajesArmonicos {
 				f.write(JSON.stringify(canon.canon));
 				f.close;
 				net.sendMsg("/json", jsonpath);
-			}
+			};
+			"Pasajes Armónicos has been initialized!".postln;
 		})
 	}
 
@@ -63,7 +79,7 @@ PasajesArmonicos {
 
 	*playDefault {
 		var net = NetAddr("127.0.0.1", 32000);
-		~makeCanon.();
+		~makeCanon.(~pasaje);
 		net.sendMsg('/play');
 	}
 }
