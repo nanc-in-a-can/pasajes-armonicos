@@ -47,8 +47,11 @@ PasajesArmonicos {
 					repeat: inf);
 
 				var net = NetAddr.new("127.0.0.1", 32001);   // send canon json to localhost:32001
-				var jsonpath = (~baseDir++"/../JSONs/canon.json");
-				var f = File(jsonpath, "w");
+				var id = UniqueID.next;
+				var canonpath =(~baseDir++"/../JSONs/"++id++"-canon.json");
+				var configpath = (~baseDir++"/../JSONs/"++id++"-config.json");
+				var f = File(canonpath, "w");
+				var f1 = File(configpath, "w");
 
 				~mixer= Synth(\mixer_Pasajes);
 				~pan= Synth(\pasajes_PanAz);
@@ -60,7 +63,9 @@ PasajesArmonicos {
 
 				f.write(JSON.stringify(canon.canon));
 				f.close;
-				net.sendMsg("/json", jsonpath);
+				f1.write(JSON.stringify(pasaje));
+				f1.close();
+				net.sendMsg("/json", canonpath, configpath);
 			};
 			"Pasajes Armónicos has been initialized!".postln;
 		})
