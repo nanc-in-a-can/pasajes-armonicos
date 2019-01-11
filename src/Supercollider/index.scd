@@ -38,7 +38,7 @@ s.waitForBoot({
 		~combC2= Synth(\pasajes_combC2, [\amp, 0.1]);
 		~canon = canon;
 
-		~registerOsc.();
+		~registerOsc.(canon);
 
 		f= File(jsonpath, "w");
 		f.write(JSON.stringify(canon.canon));
