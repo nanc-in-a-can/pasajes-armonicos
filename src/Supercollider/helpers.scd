@@ -71,7 +71,7 @@ var isNumArr = {|el|
 
 		var dursSeqFromUserRhythms_ = dursSeqFromUserRhythms.collect({
 			|dursArr|
-			dursArr.collect(_.postln.linlin(0, (dursSeqFromUserRhythms.flatten.maxItem), 48, 122))
+			dursArr.collect(_.linlin(0, (dursSeqFromUserRhythms.flatten.maxItem), 48, 122))
 		});
 
 		var dursSeq = (

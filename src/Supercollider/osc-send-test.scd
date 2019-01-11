@@ -1,7 +1,10 @@
 ( //to play
 var net = NetAddr("127.0.0.1", 32000);
+~makeCanon.();
 net.sendMsg('/play');
 )
+
+
 
 (
 var r = {rrand(0.0, 1)};
