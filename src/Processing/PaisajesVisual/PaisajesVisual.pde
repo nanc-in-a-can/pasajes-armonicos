@@ -60,6 +60,8 @@ void draw() {
   visualizeCanon();
   
   image(pg, 0, 0);
+  
+  sendIMU("/dirxyz", yaw, pitch, roll);
 }
 
 void keyPressed() {
