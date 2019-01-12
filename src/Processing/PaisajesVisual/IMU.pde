@@ -1,7 +1,17 @@
 // Serial port state.
 Serial       port;
 final String serialConfigFile = "serialconfig.txt";
-boolean      printSerial = true;
+boolean      printSerial = false;
+
+//min, max
+float maxX = -10000.0;
+float minX = 100000.0;
+
+float maxY = -10000.0;
+float minY = 100000.0;
+
+float maxZ = -10000.0;
+float minZ =  100000.0;
 
 /*
 setup Serial
@@ -54,10 +64,45 @@ void serialEvent(Serial p) {
   if ((incoming.length() > 8)) {
     String[] list = split(incoming, " ");
     if ( (list.length > 0) && (list[0].equals("Orientation:")) ) {
+      
+      //save the last value
+      pRoll  = roll;
+      pPitch = pitch;
+      pYaw   = yaw;
+      
+      
       roll  = float(list[3]); // Roll = Z
       pitch = float(list[2]); // Pitch = Y 
       yaw   = float(list[1]); // Yaw/Heading = X
+
+
+      if (yaw > maxX) {
+        maxX = yaw;
+      }
+      if (yaw < minX) {
+        minX = yaw;
+      }
+
+      if (yaw > maxY) {
+        
+        maxY = yaw;
+      }
+      if (yaw < minY) {
+        minY = yaw;
+      }
+
+      if (roll > maxZ) {
+        maxZ = roll;
+      }
+      if (roll < minZ) {
+        minZ = roll;
+      }
+      yaw   = map(yaw, minX, maxX, 0, 1.0);
+      pitch = map(pitch, minY, maxY, 0, 1.0);
+      roll  = map(roll, minZ, maxZ, 0, 1.0);
+      
       imuStr= roll+" "+pitch+" "+yaw;
+      //
       imuData.addLast(imuStr);
       if (imuData.size() > maxDequeValues) {
         imuData.removeFirst();
