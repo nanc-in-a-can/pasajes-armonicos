@@ -2,7 +2,8 @@ JSONArray  json;
 
 //defulta json path
 
-String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/Supercollider/../JSONs/canon.json";
+String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/Supercollider/../JSONs/1007-canon.json";
+boolean doneReadingJson = false;
 
 void loadJson(String path) {
   jsonPath = path;
@@ -52,10 +53,29 @@ void loadJson(String path) {
 
 /*
 Visual
-*/
+ */
 
-void visualizeCanon(){
-  for(Canon can : canons){
-    
+void visualizeCanon() {
+  textFont(font);
+
+  int x = 300;
+  int y = 20;
+
+  stroke(255);
+  try {
+    for (Canon can : canons) {
+      for (int i  = 0; i < can.notes.size(); i++) {
+        float note = can.notes.get(i);
+        float dur  = can.durs.get(i);
+        String names = note + " "+dur;
+        text(names, x, y);
+        y+=15;
+      }
+      x+=50;
+    }
+  }
+  catch (java.util.ConcurrentModificationException exception) {
+  } 
+  catch (Throwable throwable) {
   }
 }

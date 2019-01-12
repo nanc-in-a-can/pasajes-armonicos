@@ -18,11 +18,10 @@ p.register = (//add your data to initialize the instalation
 	verse: "cano n o asdf dfadfttt4 4 4 adga sg 454can on",
 	gibberish: "asdlkj asldja daslda sj adajsdalksdj asj 34ljas dlkje54 sd0f9 we5n dsflkjsdf sdlfkj sdfs"
 );
+
 p.postln;
-// p.play
 p.play;
 p.postln;
-NetAddr("127.0.0.1", 32000).sendMsg('/play');
 
 )
 
