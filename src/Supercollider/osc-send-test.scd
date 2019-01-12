@@ -1,7 +1,7 @@
 ( //to play
 var net = NetAddr("127.0.0.1", 32000);
-~makeCanon.();
-net.sendMsg('/play');
+// ~makeCanon.();
+NetAddr("127.0.0.1", 32000).sendMsg('/play');
 )
 
 
@@ -38,7 +38,7 @@ o.free;o = OSCFunc({
 // o.free;
 )
 
-~controls.tempoScale = 5;
+~controls.tempoScale = 10;
 ~controls.hamp = 0;
 ~controls.vdensity = 1;
 

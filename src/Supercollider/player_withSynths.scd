@@ -46,6 +46,14 @@
 	var player = Tdef(def, {
 		var elapsed = 0;
 		var voicesState = makeVoicesState.(canon);
+		var slowestVoice = canon[canon.size - 1];
+		var canonDuration = slowestVoice.durs.sum*1000;
+		var bcp = slowestVoice.bcp*1000;
+		var bcpPercentageElapsed = -1;
+		var getBcpAdvancementePercentage = {
+			|elapsed, bcp|
+			((elapsed/bcp*10));
+		};
 		var shouldPlayVoice_ = shouldPlayVoice.(voicesState); // we avoid recalculating the value of `unit` every time
 		var numVoices = canon.size;
 		var finishedCanons = 0;
@@ -55,6 +63,18 @@
 
 			if(iterateVoices, { // basic optimization to avoid iteration of voicesState every 1ms
 				var nextSoundsAt = List [];
+				var bcpPercentage = getBcpAdvancementePercentage.(elapsed, bcp);
+
+				bcpPercentageElapsed = if(bcpPercentage.floor > bcpPercentageElapsed,
+					{
+						var perc = bcpPercentage.floor;
+						var notice = (100 - (perc*10));
+						if(notice > 0, {("You are " ++ notice ++ "% before the convergence point").postln});
+						if(notice == 0, {("This was the convergence point!!!!!!").postln});
+						perc
+					},
+					{bcpPercentageElapsed}
+				);
 
 				voicesState.do({|voice|
 					nextSoundsAt.add(voice.nextSoundAt); // build a list of the nextSoundAt to get the next value for globalNextSoundAt
@@ -70,12 +90,7 @@
 						voice.nextIndex = voice.nextIndex + 1;
 						voice.nextSoundAt = elapsed + (dur * 1000);
 
-						// // play sound or update finishedCanons
-						// if(dur != inf,
-						// 	{(freq: note.midicps, dur: dur/~tempoScale).play;},
-						// 	{finishedCanons = finishedCanons + 1}
-					// );
-
+						// play sound or update finishedCanons
 						if(dur == inf,
 							{finishedCanons = finishedCanons + 1},
 							if(shouldPlayVoice_.(controls.vdensity, voice.voiceIndex), {
@@ -97,8 +112,11 @@
 								).play;
 
 								net.sendMsg("/voice_event",
-									*[voice.voiceIndex,
-										dur]
+									*[
+										voice.voiceIndex,
+										bcpPercentage,
+										dur
+									]
 									++ if(notes.isArray, {notes}, {[notes]})
 								);
 

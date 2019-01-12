@@ -1,17 +1,19 @@
-~registerOsc = {
+(
+var f1, f2;
+~registerOsc = {|canon|
 	//Processing should send a message to /play @ localhost:32000 to trigger playback
 	thisProcess.openUDPPort(32000);
-	o.free;
-	o = OSCFunc({
-		~canon.play
+	f1.free;
+	f1 = OSCFunc({
+		canon.play
 	}, \play,   recvPort: 32000);
 
 	//recieve xyz data from Processing
 	thisProcess.openUDPPort(32000);
 	thisProcess.openPorts;
 	OSCFunc.trace(false);
-	p.free;
-	p = OSCFunc({
+	f2.free;
+	f2 = OSCFunc({
 		|msg|
 		var x, y, z;
 		x = msg[1];
@@ -26,3 +28,5 @@
 		~controls.postln;
 	}, \dirxyz,   recvPort: 32000)
 };
+)
+

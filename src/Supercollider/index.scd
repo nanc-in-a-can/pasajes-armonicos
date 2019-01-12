@@ -1,54 +1,29 @@
+PasajesArmonicos.initialize
+PasajesArmonicos.instructions
+PasajesArmonicos.playDefault
+
 (
-s.options.numBuffers = 1024 * 32;
-Can.defaultServerConfig;
-s.boot;
-s.waitForBoot({
-	~baseDir = thisProcess.nowExecutingPath.dirname;
-	(~baseDir++"/wavetable_Soundfiles.scd").load;
-	(~baseDir++"/synths.scd").load;
-	(~baseDir++"/player_withSynths.scd").load;
-	(~baseDir++"/helpers.scd").load;
-	(~baseDir++"/register-osc.scd").load;
-	(~baseDir++"/interfaces/code-test.scd").load;
-
-	//init controls
-	~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
-
-	~makeCanon = {
-		var densityOfVoices = [20].choose;
-		var sizeOfMelody = [30,50,80].choose;
-		var melody = ~makeMelody.(sizeOfMelody, ~pasaje);
-		var canon = Can.converge(\myLiveCan,
-			player: {|sym, canon|
-				~makeTaskPlayer.(sym, ~controls, canon)},
-			melody: melody,
-			cp: (sizeOfMelody*0.618).round,
-			voices: Can.convoices(
-				Array.fill(densityOfVoices, { rrand(75, 95)/2 }),
-				Array.fill(densityOfVoices, { rrand(-24, 12) }),
-				Array.fill(densityOfVoices, { rrand(0.1, 1.0) }) ),
-			repeat: inf);
-
-		var net = NetAddr.new("127.0.0.1", 32001);   // send canon json to localhost:32001
-		var jsonpath = (~baseDir++"/../JSONs/canon.json");
-
-		~mixer= Synth(\mixer_Pasajes);
-		~pan= Synth(\pasajes_PanAz);
-		~combC1= Synth(\pasajes_combC1, [\amp, 0.1]); // aqui se le puede mover a la amp antes de inicializar la chingadera si es necesario;
-		~combC2= Synth(\pasajes_combC2, [\amp, 0.1]);
-		~canon = canon;
-
-		~registerOsc.();
-
-		f= File(jsonpath, "w");
-		f.write(JSON.stringify(canon.canon));
-		f.close;
-		net.sendMsg("/json", jsonpath);
-	}
-})
+p = PasajesArmonicos.new;
+p.register = (//add your data to initialize the instalation
+	//any key containing the string rhythms (i.e. rhythms1, myrhythms) and having an array of numbers as a value will bie used to generate rhythmic values
+	nationality: \mexico,
+	age: 33, // any number
+	melodicThing: ([60, 63, 67]!10).flatten,
+	rhythms: [1/4, 1/5, 1/4],
+	rhythms2: (([1/4, 1/5, 1/4]*7/8)!3).flatten,
+	rhythms3: "badInput",
+	hugeNumber: 5,
+	gender: \shouffsdfasdfasdfldntcare,
+	wtf: "I'm \nbluasdfasdfae",
+	verse: "cano n o asdf dfadfttt4 4 4 adga sg 454can on",
+	gibberish: "asdlkj asldja daslda sj adajsdalksdj asj 34ljas dlkje54 sd0f9 we5n dsflkjsdf sdlfkj sdfs"
 );
+p.postln;
+// p.play
+p.play;
+p.postln;
+NetAddr("127.0.0.1", 32000).sendMsg('/play');
 
+)
 
-
-
-
+~controls.tempoScale = 1
