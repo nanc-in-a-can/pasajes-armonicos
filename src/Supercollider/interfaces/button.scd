@@ -1,10 +1,11 @@
 
 (
+var w;
 var width= 300, height= 550;
 var bottonPlay, botonTrans;
 var playBotton, transBotton, static1, curatorialTextEsp, curatorialTextEng, curadoDeFresa, curatorialStatic;
 
-
+"compila buttin".postln;
 
 
 w = Window.new("Pasajes Armónicos", Rect(1050,210, width, height), false, false, scroll: true);
