@@ -7,8 +7,8 @@ var playBotton, playBotton2, transBotton, static1, static2, curatorialTextEsp, c
 ~widthB= 300; ~heightB= 150; ~xB= 1000; ~yB= 800;
 //"compila button".postln;
 
-"~widthB and ~heightB control the buttons size".postln;
-"~xB and ~yB control button location".postln;
+/*"~widthB and ~heightB control the buttons size".postln;
+"~xB and ~yB control button location".postln;*/
 
 w = Window.new("Pasajes Armónicos", Rect(~xB,~yB, ~widthB, ~heightB), false, false, scroll: true);
 
