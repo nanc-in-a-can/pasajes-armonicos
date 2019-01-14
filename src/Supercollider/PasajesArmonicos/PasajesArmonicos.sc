@@ -57,7 +57,7 @@ PasajesArmonicos {
 				f.close;
 				f1.write(JSON.stringify(pasaje));
 				f1.close;
-
+				~mixer.free;~pan.free;~combC1.free;~combC2.free;
 				~mixer= Synth(\mixer_Pasajes);
 				~pan= Synth(\pasajes_PanAz);
 				~combC1= Synth(\pasajes_combC1, [\amp, 0.1]); // aqui se le puede mover a la amp antes de inicializar la chingadera si es necesario;
@@ -65,7 +65,6 @@ PasajesArmonicos {
 				~canon = canon;
 
 				~registerOsc.(canon);
-
 				net.sendMsg("/json", canonpath, configpath);
 			};
 			"Pasajes Armónicos has been initialized!".postln;

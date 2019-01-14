@@ -1,3 +1,4 @@
+
 (
 SynthDef(\pasajesPluck, {| freq=220, coef=0.9, amp=1, pan=0, out=0, dur=0 |
 	var sig, env;
