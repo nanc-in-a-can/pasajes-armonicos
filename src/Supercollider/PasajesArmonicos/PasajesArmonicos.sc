@@ -32,7 +32,7 @@ PasajesArmonicos {
 			~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
 
 			~makeCanon = {|pasaje|
-				var densityOfVoices = [20].choose;
+				var densityOfVoices = [35].choose;
 				var sizeOfMelody = [30,50,80].choose;
 				var melody = ~makeMelody.(sizeOfMelody, pasaje);
 				var canon = Can.converge(\myLiveCan,
