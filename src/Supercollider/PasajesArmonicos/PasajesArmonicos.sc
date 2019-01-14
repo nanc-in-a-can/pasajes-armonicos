@@ -11,13 +11,13 @@ PasajesArmonicos {
 	}
 
 	play {
-		var net = NetAddr("localhost", 7778);
+		var net = NetAddr("192.168.2.27", 7778);
 		var msg = JSON.stringify(this.pasaje);
 		net.sendMsg(\pasaje, msg);
 	}
 
 	*playDefault {
-		var net = NetAddr("localhost", 7778);
+		var net = NetAddr("192.168.2.27", 7778);
 		var msg = JSON.stringify((//add your data to initialize the instalation
 			//any key containing the string rhythms (i.e. rhythms1, myrhythms) and having an array of numbers as a value will bie used to generate rhythmic values
 			nationality: \mexico,
