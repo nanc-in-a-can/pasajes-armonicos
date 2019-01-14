@@ -24,7 +24,7 @@ var f1, f2;
 		~pan.set(\pos1, x.linlin(0,1, 0, 4), \pos2, y.linlin(0,1, 0, 3), \pos3, z.linlin(0,1, 0, 3.5));
 		~controls.vdensity = y;
 		~controls.hamp = x;
-		~controls.tempoScale = z.lincurve(0, 1, 0.3, 10, 2.5);
+		~controls.tempoScale = z.lincurve(0, 1, 0.3, 4, 2.5);
 		~controls.postln;
 	}, \dirxyz,   recvPort: 32000)
 };

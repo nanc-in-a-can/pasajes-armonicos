@@ -1,93 +1,44 @@
 PasajesArmonicos {
 	var <>pasaje;
 
-	register_ {|val|
-		^pasaje = val;
-	}
-
-	getPasaje {
-		^pasaje;
-	}
-
-	play {
-		// a /play message is required at port 32000 to initialize playback
-		~makeCanon.(this.getPasaje);
-	}
-
-	*initialize {|dirname|
+	*initialize {
 		var s = Server.local;
+<<<<<<< HEAD
 		s.options.numBuffers = 1024 * 32;
 		s.options.numOutputBusChannels = 4;
 		s.options.device = "ASIO";
 		Can.defaultServerConfig;
+=======
+>>>>>>> 2e6a93a2f7b88887fa8abd0b85424cdf99dfea9b
 		s.boot;
 		s.waitForBoot({
-			~baseDir = thisProcess.nowExecutingPath.dirname;
-			(~baseDir++"/wavetable_Soundfiles.scd").load;
-			(~baseDir++"/synths.scd").load;
-			(~baseDir++"/player_withSynths.scd").load;
-			(~baseDir++"/helpers.scd").load;
-			(~baseDir++"/register-osc.scd").load;
-			(~baseDir++"/interfaces/code-test.scd").load;
-
-			//init controls
-			~controls = (tempoScale: 1, hamp: 0, vdensity: 1);
-
-			~makeCanon = {|pasaje|
-				var densityOfVoices = [35].choose;
-				var sizeOfMelody = [30,50,80].choose;
-				var melody = ~makeMelody.(sizeOfMelody, pasaje);
-				var canon = Can.converge(\myLiveCan,
-					player: {|sym, canon|
-						~makeTaskPlayer.(sym, ~controls, canon)},
-					melody: melody,
-					cp: (sizeOfMelody*0.618).round,
-					voices: Can.convoices(
-						Array.fill(densityOfVoices, { rrand(75, 95)/2 }),
-						Array.fill(densityOfVoices, { rrand(-24, 12) }),
-						Array.fill(densityOfVoices, { rrand(0.1, 1.0) }) ),
-					repeat: inf);
-
-				var net = NetAddr.new("127.0.0.1", 32001);   // send canon json to localhost:32001
-				var id = Date.localtime.asSortableString;
-				var canonpath =(~baseDir++"/"++id++"-canon.json").replace("Supercollider", "JSONs");
-				var configpath = (~baseDir++"/../JSONs/"++id++"-config.json").replace("Supercollider", "JSONs");
-				var f = File(canonpath, "w");
-				var f1 = File(configpath, "w");
-
-				f.write(JSON.stringify(canon.canon));
-				f.close;
-				f1.write(JSON.stringify(pasaje));
-				f1.close;
-
-				~mixer= Synth(\mixer_Pasajes);
-				~pan= Synth(\pasajes_PanAz);
-				~combC1= Synth(\pasajes_combC1, [\amp, 0.1]); // aqui se le puede mover a la amp antes de inicializar la chingadera si es necesario;
-				~combC2= Synth(\pasajes_combC2, [\amp, 0.1]);
-				~canon = canon;
-
-				~registerOsc.(canon);
-
-				net.sendMsg("/json", canonpath, configpath);
-			};
-			"Pasajes Armónicos has been initialized!".postln;
+			var baseDir = thisProcess.nowExecutingPath.dirname;
+			(baseDir++"/interfaces/button.scd").load;
 		})
 	}
 
-	*instructions {
-		[
-			"\n",
-			"Instructions:",
-			"Posting",
-			"Some instructions",
-			"one line at a time"
-		].do(_.postln)
-		^ "--------------------------->-->-->-->-->-->-->-->-->-->"
+	play {
+		var net = NetAddr("192.168.2.27", 7778);
+		var msg = JSON.stringify(this.pasaje);
+		net.sendMsg(\pasaje, msg);
 	}
 
 	*playDefault {
-		var net = NetAddr("127.0.0.1", 32000);
-		~makeCanon.(~pasaje);
-		net.sendMsg('/play');
+		var net = NetAddr("192.168.2.27", 7778);
+		var msg = JSON.stringify((//add your data to initialize the instalation
+			//any key containing the string rhythms (i.e. rhythms1, myrhythms) and having an array of numbers as a value will bie used to generate rhythmic values
+			nationality: \mexico,
+			age: 33, // any number
+			melodicThing: ([60, 63, 67]!10).flatten,
+			rhythms: [1/4, 1/5, 1/4],
+			rhythms2: (([1/4, 1/5, 1/4]*7/8)!3).flatten,
+			rhythms3: "badInput",
+			hugeNumber: 5,
+			gender: \shouffsdfasdfasdfldntcare,
+			wtf: "I'm \nbluasdfasdfae",
+			verse: "cano n o asdf dfadfttt4 4 4 adga sg 454can on",
+			gibberish: "asdlkj asldja daslda sj adajsdalksdj asj 34ljas dlkje54 sd0f9 we5n dsflkjsdf sdlfkj sdfs"
+		));
+		net.sendMsg(\pasaje, msg);
 	}
 }
