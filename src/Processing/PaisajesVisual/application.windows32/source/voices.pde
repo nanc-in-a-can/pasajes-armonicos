@@ -9,22 +9,30 @@ void setupVoiceData() {
 
 /*
 Display information about the voices
-*/
-void displayVoices() {
-  textFont(font);
+ */
+void displayVoices(PGraphics pg) {
+  if (!voicesDisplayLock) {
 
-  int x = 130;
-  int y = 20;
-  
-  stroke(255);
-  try {
-    for (String voice : voiceData) {
-      text(voice, x, y);
-      y+=15;
+    if (millis() - voicesDisplayTime > 12000) {
+      voicesDisplayLock = true;
     }
-  } 
-  catch (java.util.ConcurrentModificationException exception) {
-  } 
-  catch (Throwable throwable) {
+
+    int x = width - 135;
+    int y = 20;
+
+    try {
+      pg.beginDraw();
+      pg.textFont(font);
+      pg.fill(255);
+      for (String voice : voiceData) {
+        pg.text(voice, x, y);
+        y+=15;
+      }
+      pg.endDraw();
+    } 
+    catch (java.util.ConcurrentModificationException exception) {
+    } 
+    catch (Throwable throwable) {
+    }
   }
 }

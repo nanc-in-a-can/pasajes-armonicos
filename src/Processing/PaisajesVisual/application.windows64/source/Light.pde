@@ -1,29 +1,39 @@
-class BkgBang{
-  
+class LightBang {
+
   float bkgColor =0;
-  
-  BkgBang(){
-    
+
+  float pTime  = 0;
+  float maxDuration; //100ms
+  boolean enable = false;
+
+  LightBang(float maxDuration) {
+    this.maxDuration = maxDuration;
   }
   
-  float getBack(){
+  void updateDuration(float dur){
+    maxDuration = dur;
+  }
+
+  void udpate() {
+    if (enable) {
+      if (millis() - pTime >= maxDuration) {
+        bkgColor = 0;
+        enable = false;
+      }
+    }
+  }
+  
+  boolean isEnable(){
+    return enable;
+  }
+
+  float getColor() {
     return bkgColor;
   }
-  
-  void updateBkg(){
-    
+
+  void bang() {
+    bkgColor = 255;
+    pTime = millis();
+    enable = true;
   }
-  
-  void drawBkg(){
-    
-  }
-  
-  void enable(){
-    
-  }
-  
-  void diable(){
-    
-  }
-  
 }

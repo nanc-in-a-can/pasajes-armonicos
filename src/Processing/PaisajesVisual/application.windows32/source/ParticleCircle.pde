@@ -1,17 +1,17 @@
 class ParticleCircle {
-  int n = 125;
+  int numParticles;
 
-  float[] m = new float[n];
-  float[] x = new float[n];
-  float[] y = new float[n];
-  float[] vx = new float[n];
-  float[] vy = new float[n];
+  float[] m;
+  float[] x;
+  float[] y;
+  float[] vx;
+  float[] vy;
 
-  float particleWidth  = 300;
-  float particleHeight = 300;
+  float particleWidth;
+  float particleHeight;
 
-  float posX = 50;
-  float posY = 50;
+  float posX;
+  float posY;
 
   int id = 0;
   boolean lock = false;
@@ -20,15 +20,20 @@ class ParticleCircle {
   float duration;
   float cTime = 0;
 
-  float maxCircles =0.05;
-  float incCircles = 0.05;
-  float incTime = 0.0;
+  float maxCircles  = 0.08;
+  float incCircles  = 0.08;
+  float incTime     = 0.0;
 
   float attractX;
   float attractY;
+  
+  float centerX = width/2.0;
+  float centerY = height/2.0;
 
+  LightBang lightBang;
 
-  ParticleCircle(float particleWidth, float particleHeight, float posX, float posY) {
+  ParticleCircle(int numParticles, float particleWidth, float particleHeight, float posX, float posY) {
+    this.numParticles = numParticles;
     this.particleWidth  = particleWidth;
     this.particleHeight = particleHeight;
 
@@ -37,12 +42,22 @@ class ParticleCircle {
 
     this.attractX = posX + particleWidth/2.0;
     this.attractY = posY + particleHeight/2.0;
+
+    lightBang = new LightBang(80);
+
+    m  = new float[numParticles];
+    x  = new float[numParticles];
+    y  = new float[numParticles];
+    vx = new float[numParticles];
+    vy = new float[numParticles];
+  }
+  
+  void updateCenter(float posx, float posy){
+    centerX = posx;
+    centerY = posy;
   }
 
-
   void updateGrow() {
-
-
     if (!lock) {
       float currentTime = millis();
       if (currentTime - cTime > duration) {
@@ -50,6 +65,7 @@ class ParticleCircle {
         println(currentTime - cTime+" "+duration);
         lock = true;
         incCircles = maxCircles;
+        println(incCircles);
       } else {
         incCircles += incTime;
       }
@@ -59,9 +75,16 @@ class ParticleCircle {
 
 
   void draw(PGraphics pg) {
-    for (int i = 0; i < n; i++) {
-      float dx = width/2.0 - x[i];
-      float dy = height/2.0 - y[i];
+
+    if (lightBang.isEnable()) {
+      pg.beginDraw();
+      pg.fill(lightBang.getColor());
+      pg.rect(posX, posY, particleWidth, particleHeight);
+      pg.endDraw();
+    }
+    for (int i = 0; i < numParticles; i++) {
+      float dx = centerX - x[i];
+      float dy = centerY - y[i];
 
       float d = sqrtSemi(dx*dx + dy*dy);
       if (d < 1) d = 1;
@@ -74,18 +97,18 @@ class ParticleCircle {
 
     pg.beginDraw();
     pg.beginShape(POINTS);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < numParticles; i++) {
       x[i] += vx[i];
       y[i] += vy[i];
 
-      if (x[i] <= posX) x[i] = particleWidth + posX;
-      else if (x[i] >= particleWidth+ posX) x[i] = posX;
+      if (x[i] < posX) x[i] = particleWidth + posX;
+      else if (x[i] > particleWidth+ posX) x[i] = posX;
 
-      if (y[i] <= posY) y[i] = particleHeight + posY;
-      else if (y[i] >= particleHeight+ posY) y[i] = posY;
+      if (y[i] < posY) y[i] = particleHeight + posY;
+      else if (y[i] > particleHeight+ posY) y[i] = posY;
 
-      if (m[i] < 0) {
-        pg.stroke(155, 150);
+      if (m[i] < 0.0) {
+        pg.stroke(155);
       } else { 
         pg.stroke(255, 150);
       }
@@ -94,6 +117,8 @@ class ParticleCircle {
     }
     pg.endShape();
     pg.endDraw();
+
+    lightBang.udpate();
   }
 
   void reset() {
@@ -103,21 +128,22 @@ class ParticleCircle {
     lock = false;
 
     float fps_ms = 1000.0/frameRate;
-    
+
     float dur_fsp = duration/fps_ms;
 
     incTime = maxCircles/dur_fsp;
     incCircles= 0;
-    
+
     println("fps:"+fps_ms+" "+frameRate);
     println("id: "+id+" inc: "+incTime);
     println(dur_fsp*duration+" "+duration);
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < numParticles; i++) {
       m[i] = randomGaussian() * 16;
       x[i] = random(particleWidth);
       y[i] = random(particleHeight);
     }
+    lightBang.bang();
   }
   /**
    * Semi-Accurate approximation for a floating-point square root.

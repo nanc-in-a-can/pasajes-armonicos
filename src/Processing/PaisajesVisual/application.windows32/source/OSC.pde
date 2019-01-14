@@ -4,6 +4,9 @@
 
 boolean msgVoice = true;
 
+float voicesDisplayTime = 0;
+boolean voicesDisplayLock = true;
+
 
 void oscSetup() {
   oscP5 = new OscP5(this, 32001);
@@ -63,11 +66,11 @@ void oscEvent(OscMessage theOscMessage) {
     if (voiceData.size() > maxVoices) {
       voiceData.removeFirst();
     }  
-    
-    float cirW = 1280 /5.0;
-    float cirH = 720 / 7.0;
-   
-    
+
+    float cirW = width /5.0;
+    float cirH = height / 7.0;
+
+
     //map
     // 0 -> 17  // 8 -> 21   //16 -> 24  //24 -> 10  //32-> 32
     // 1 -> 12  // 9 -> 5    //17 -> 29  //25 -> 0   //33 -> 33
@@ -77,22 +80,23 @@ void oscEvent(OscMessage theOscMessage) {
     // 5 -> 11  // 13 -> 9   //21 -> 25  //29 -> 4
     // 6 -> 13  // 14 -> 14  //22 -> 20  //30 -> 30
     // 7 -> 23  // 15 -> 19  //23 -> 15  //31 -> 31
-    
-    int mapValues[]= {17, 12, 28, 22, 16, 11, 13, 23,
-                      21,  5,  6,  7,  8,  9, 14, 19,
-                      24, 29, 29, 27, 26, 25, 20, 15,
-                      10,  0,  1,  2,  3,  4, 30, 31, 
-                      32, 33, 34};
-                      
+
+    int mapValues[]= {17, 12, 28, 22, 16, 11, 13, 23, 
+      21, 5, 6, 7, 8, 9, 14, 19, 
+      24, 29, 29, 27, 26, 25, 20, 15, 
+      10, 0, 1, 2, 3, 4, 30, 31, 
+      32, 33, 34};
+
     int mapIndex = mapValues[index];
     int indexX = mapIndex%5;
     int indexY = mapIndex/5%7;
 
     if (circles.isEmpty()) {
-      ParticleCircle circle  = new ParticleCircle(cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+      ParticleCircle circle  = new ParticleCircle(100, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
       circle.id = mapIndex;
       circle.duration  = dur*1000;
       circle.reset();
+      circle.lightBang.updateDuration(40 + dur*2.5);
       circles.add(circle);
       println("create first");
     } else {
@@ -110,18 +114,16 @@ void oscEvent(OscMessage theOscMessage) {
       if (foundId) {
         circles.get(index).duration  = dur*1000;
         circles.get(index).reset();
+        circles.get(index).lightBang.updateDuration(50 + dur*2.5);
       } else {
-        ParticleCircle circle  = new ParticleCircle(cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+        ParticleCircle circle  = new ParticleCircle(100, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
         circle.id = mapIndex;
         circle.duration  = dur*1000;
         circle.reset();
+        circle.lightBang.updateDuration(50 + dur*2.5);
         circles.add(circle);
       }
     }
-
-
-    //index, dur, note
-    // println(
   }
 }
 

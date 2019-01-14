@@ -13,6 +13,16 @@ float minY = 100000.0;
 float maxZ = -10000.0;
 float minZ =  100000.0;
 
+boolean grabController = false;
+boolean lockController = false;
+boolean onceController = false;
+
+float pTimeIMU =0;
+
+//display counter
+float imuDisplayTime = 0;
+boolean imuDisplayLock = true;
+
 /*
 setup Serial
  */
@@ -64,13 +74,13 @@ void serialEvent(Serial p) {
   if ((incoming.length() > 8)) {
     String[] list = split(incoming, " ");
     if ( (list.length > 0) && (list[0].equals("Orientation:")) ) {
-      
+
       //save the last value
       pRoll  = roll;
       pPitch = pitch;
       pYaw   = yaw;
-      
-      
+
+
       roll  = float(list[3]); // Roll = Z
       pitch = float(list[2]); // Pitch = Y 
       yaw   = float(list[1]); // Yaw/Heading = X
@@ -99,8 +109,26 @@ void serialEvent(Serial p) {
       yaw   = map(yaw, minX, maxX, 0.0, 1.0);
       pitch = abs(map(pitch, minY, maxY, 0.0, 1.0));
       roll  = map(roll, minZ, maxZ, 0.0, 1.0);
-   
-      
+
+
+      //if grab the controller change the mode of interaction
+      if (abs(roll - pRoll)  > 0.02 ||  abs(pitch - pPitch)  > 0.02  ||  abs(yaw - pYaw)  > 0.02 ) {
+
+        if (!lockController) {
+          grabController = true;
+          onceController = true;
+        }
+        pTimeIMU = millis();
+
+        print("controller: "+grabController);
+      } else {
+
+        if (!lockController) {
+          grabController = false;
+        }
+      }
+
+
       imuStr = String.format("%.2f", roll)+" "+String.format("%.2f", pitch) +" "+String.format("%.2f", yaw);
       //
       imuData.addLast(imuStr);
@@ -111,21 +139,58 @@ void serialEvent(Serial p) {
   }
 }
 
+void updateIMU() {
+
+  if (onceController && grabController) {
+
+    bkgBang.bang();
+
+    particleController.id = 0;
+    particleController.duration  = 10*1000;
+    particleController.reset();
+
+    //single bang in 20 seconds
+    pTimeIMU = millis();
+    imuDisplayTime = millis();
+    voicesDisplayTime = millis();
+    
+    onceController = false;
+    lockController = true;
+
+    imuDisplayLock = false;
+    voicesDisplayLock = false;
+  }
+
+  if (lockController) {
+    if (millis() - pTimeIMU > 5*1000) {
+      lockController = false;
+    }
+  }
+}
+
+
 //display 
 void displayData() {
-  textFont(font);
+  if (!imuDisplayLock) {
 
-  int x = 10;
-  int y = 20;
-  stroke(255);
-  try {
-    for (String imudata : imuData) {
-      text(imudata, x, y);
-      y+=15;
+    if (millis() - imuDisplayTime > 12000) {
+      imuDisplayLock = true;
     }
-  } 
-  catch (java.util.ConcurrentModificationException exception) {
-  } 
-  catch (Throwable throwable) {
+
+    textFont(font);
+
+    int x = 10;
+    int y = 20;
+    stroke(255);
+    try {
+      for (String imudata : imuData) {
+        text(imudata, x, y);
+        y+=15;
+      }
+    } 
+    catch (java.util.ConcurrentModificationException exception) {
+    } 
+    catch (Throwable throwable) {
+    }
   }
 }
