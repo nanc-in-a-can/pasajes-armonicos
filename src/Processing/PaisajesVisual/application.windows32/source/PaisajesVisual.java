@@ -7,6 +7,7 @@ import oscP5.*;
 import netP5.*; 
 import processing.serial.*; 
 import java.util.*; 
+import spout.*; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -24,6 +25,9 @@ public class PaisajesVisual extends PApplet {
 
  
 
+
+// DECLARE A SPOUT OBJECT
+Spout spout;
 
 OscP5 oscP5;
 NetAddress myRemoteLocation;
@@ -75,7 +79,7 @@ public void setup() {
   font = createFont("Inconsolata.otf", 12, true);
 
   //PGraphics
-  pg = createGraphics(1280, 720); 
+  pg = createGraphics(1024, 768); 
 
   //setupIMU
   setupIMU();
@@ -90,7 +94,11 @@ public void setup() {
   oscSetup();
 
   //lightbang
+<<<<<<< HEAD
   bkgBang = new LightBang(200);
+=======
+  bkgBang = new LightBang(60);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 
 
   //cirlce
@@ -101,26 +109,50 @@ public void setup() {
   particleController.id = 0;
   particleController.duration  =10*1000;
   particleController.reset();
+<<<<<<< HEAD
+=======
+
+  spout = new Spout(this);
+
+  // CREATE A NAMED SENDER
+  // A sender can be created now with any name.
+  // Otherwise a sender is created the first time
+  // "sendTexture" is called and the sketch
+  // folder name is used.  
+  spout.createSender("Spout Processing");
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 }
 
 
 public void draw() {
   pg.beginDraw();
+<<<<<<< HEAD
   pg.fill(bkgBang.getColor(), 20);
+=======
+  pg.fill(bkgBang.getColor(), 50);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
   pg.rect(0, 0, width, height);
   pg.endDraw();
 
   //input data
-  displayData();
+  //displayData();
 
   //canon
   //visualizeCanon();
 
   //voices
+<<<<<<< HEAD
   displayVoices();
 
   if (grabController) {
     particleController.updateCenter(pitch*width, yaw*height);
+=======
+  displayVoices(pg);
+
+  if (grabController) {
+    particleController.updateCenter(pitch*width, yaw*height);
+    particleController.incCircles = map(roll, 0, 1, 0.01f, 0.09f);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
     particleController.draw(pg);
     particleController.updateGrow();
   } else {
@@ -143,8 +175,8 @@ public void draw() {
 
   //send IMU information
   if (abs(roll - pRoll)  > 0.05f ||  abs(pitch - pPitch)  > 0.05f  ||  abs(yaw - pYaw)  > 0.05f ) {
-    //sendIMU("/dirxyz", yaw, pitch, roll);
-    println(imuStr);
+    sendIMU("/dirxyz", yaw, pitch, roll);
+    //println(imuStr);
   }
 
 
@@ -160,9 +192,20 @@ public void draw() {
     stroke(255, 0, 0);
     text(frameRate, 50, 50);
   }
+<<<<<<< HEAD
 
   bkgBang.udpate();
   updateIMU();
+=======
+  
+    //input data
+  displayData();
+
+  bkgBang.udpate();
+  updateIMU();
+
+  spout.sendTexture();
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 }
 
 public void keyPressed() {
@@ -190,6 +233,15 @@ public void keyPressed() {
     particleController.id = 0;
     particleController.duration  = 25*1000;
     particleController.reset();
+<<<<<<< HEAD
+=======
+
+    imuDisplayTime = millis();
+    imuDisplayLock = false;
+
+    voicesDisplayTime = millis();
+    voicesDisplayLock = false;
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
     print("controller: "+grabController);
   }
 }
@@ -242,6 +294,13 @@ boolean onceController = false;
 
 float pTimeIMU =0;
 
+<<<<<<< HEAD
+=======
+//display counter
+float imuDisplayTime = 0;
+boolean imuDisplayLock = true;
+
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 /*
 setup Serial
  */
@@ -345,7 +404,10 @@ public void serialEvent(Serial p) {
         if (!lockController) {
           grabController = false;
         }
+<<<<<<< HEAD
         
+=======
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
       }
 
 
@@ -366,13 +428,28 @@ public void updateIMU() {
     bkgBang.bang();
 
     particleController.id = 0;
+<<<<<<< HEAD
     particleController.duration  = 20*1000;
+=======
+    particleController.duration  = 10*1000;
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
     particleController.reset();
 
     //single bang in 20 seconds
     pTimeIMU = millis();
+<<<<<<< HEAD
     onceController = false;
     lockController = true;
+=======
+    imuDisplayTime = millis();
+    voicesDisplayTime = millis();
+    
+    onceController = false;
+    lockController = true;
+
+    imuDisplayLock = false;
+    voicesDisplayLock = false;
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
   }
 
   if (lockController) {
@@ -385,27 +462,38 @@ public void updateIMU() {
 
 //display 
 public void displayData() {
-  textFont(font);
+  if (!imuDisplayLock) {
 
-  int x = 10;
-  int y = 20;
-  stroke(255);
-  try {
-    for (String imudata : imuData) {
-      text(imudata, x, y);
-      y+=15;
+    if (millis() - imuDisplayTime > 12000) {
+      imuDisplayLock = true;
     }
-  } 
-  catch (java.util.ConcurrentModificationException exception) {
-  } 
-  catch (Throwable throwable) {
+
+    textFont(font);
+
+    int x = 10;
+    int y = 20;
+    stroke(255);
+    try {
+      for (String imudata : imuData) {
+        text(imudata, x, y);
+        y+=15;
+      }
+    } 
+    catch (java.util.ConcurrentModificationException exception) {
+    } 
+    catch (Throwable throwable) {
+    }
   }
 }
 JSONArray  json;
 
 //defulta json path
 
+<<<<<<< HEAD
 String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/JSONs/20190114072341-canon.json";
+=======
+String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/Supercollider/../JSONs/canon.json";
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 boolean doneReadingJson = false;
 
 public void loadJson(String path) {
@@ -494,6 +582,13 @@ class LightBang {
 
   LightBang(float maxDuration) {
     this.maxDuration = maxDuration;
+<<<<<<< HEAD
+=======
+  }
+  
+  public void updateDuration(float dur){
+    maxDuration = dur;
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
   }
 
   public void udpate() {
@@ -524,6 +619,9 @@ class LightBang {
  */
 
 boolean msgVoice = true;
+
+float voicesDisplayTime = 0;
+boolean voicesDisplayLock = true;
 
 
 public void oscSetup() {
@@ -584,11 +682,11 @@ public void oscEvent(OscMessage theOscMessage) {
     if (voiceData.size() > maxVoices) {
       voiceData.removeFirst();
     }  
-    
-    float cirW = 1280 /5.0f;
-    float cirH = 720 / 7.0f;
-   
-    
+
+    float cirW = width /5.0f;
+    float cirH = height / 7.0f;
+
+
     //map
     // 0 -> 17  // 8 -> 21   //16 -> 24  //24 -> 10  //32-> 32
     // 1 -> 12  // 9 -> 5    //17 -> 29  //25 -> 0   //33 -> 33
@@ -598,22 +696,27 @@ public void oscEvent(OscMessage theOscMessage) {
     // 5 -> 11  // 13 -> 9   //21 -> 25  //29 -> 4
     // 6 -> 13  // 14 -> 14  //22 -> 20  //30 -> 30
     // 7 -> 23  // 15 -> 19  //23 -> 15  //31 -> 31
-    
-    int mapValues[]= {17, 12, 28, 22, 16, 11, 13, 23,
-                      21,  5,  6,  7,  8,  9, 14, 19,
-                      24, 29, 29, 27, 26, 25, 20, 15,
-                      10,  0,  1,  2,  3,  4, 30, 31, 
-                      32, 33, 34};
-                      
+
+    int mapValues[]= {17, 12, 28, 22, 16, 11, 13, 23, 
+      21, 5, 6, 7, 8, 9, 14, 19, 
+      24, 29, 29, 27, 26, 25, 20, 15, 
+      10, 0, 1, 2, 3, 4, 30, 31, 
+      32, 33, 34};
+
     int mapIndex = mapValues[index];
     int indexX = mapIndex%5;
     int indexY = mapIndex/5%7;
 
     if (circles.isEmpty()) {
+<<<<<<< HEAD
       ParticleCircle circle  = new ParticleCircle(120, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+=======
+      ParticleCircle circle  = new ParticleCircle(100, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
       circle.id = mapIndex;
       circle.duration  = dur*1000;
       circle.reset();
+      circle.lightBang.updateDuration(40 + dur*2.5f);
       circles.add(circle);
       println("create first");
     } else {
@@ -631,18 +734,20 @@ public void oscEvent(OscMessage theOscMessage) {
       if (foundId) {
         circles.get(index).duration  = dur*1000;
         circles.get(index).reset();
+        circles.get(index).lightBang.updateDuration(50 + dur*2.5f);
       } else {
+<<<<<<< HEAD
         ParticleCircle circle  = new ParticleCircle(120, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+=======
+        ParticleCircle circle  = new ParticleCircle(100, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
         circle.id = mapIndex;
         circle.duration  = dur*1000;
         circle.reset();
+        circle.lightBang.updateDuration(50 + dur*2.5f);
         circles.add(circle);
       }
     }
-
-
-    //index, dur, note
-    // println(
   }
 }
 
@@ -828,26 +933,34 @@ public void setupVoiceData() {
 
 /*
 Display information about the voices
-*/
-public void displayVoices() {
-  textFont(font);
+ */
+public void displayVoices(PGraphics pg) {
+  if (!voicesDisplayLock) {
 
-  int x = 130;
-  int y = 20;
-  
-  stroke(255);
-  try {
-    for (String voice : voiceData) {
-      text(voice, x, y);
-      y+=15;
+    if (millis() - voicesDisplayTime > 12000) {
+      voicesDisplayLock = true;
     }
-  } 
-  catch (java.util.ConcurrentModificationException exception) {
-  } 
-  catch (Throwable throwable) {
+
+    int x = width - 135;
+    int y = 20;
+
+    try {
+      pg.beginDraw();
+      pg.textFont(font);
+      pg.fill(255);
+      for (String voice : voiceData) {
+        pg.text(voice, x, y);
+        y+=15;
+      }
+      pg.endDraw();
+    } 
+    catch (java.util.ConcurrentModificationException exception) {
+    } 
+    catch (Throwable throwable) {
+    }
   }
 }
-  public void settings() {  size(1280, 720, P3D); }
+  public void settings() {  size(1024, 768, P3D); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "PaisajesVisual" };
     if (passedArgs != null) {

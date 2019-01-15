@@ -2,7 +2,10 @@ import oscP5.*;
 import netP5.*;
 import processing.serial.*;
 import java.util.*; 
+import spout.*;
 
+// DECLARE A SPOUT OBJECT
+Spout spout;
 
 OscP5 oscP5;
 NetAddress myRemoteLocation;
@@ -42,7 +45,7 @@ ParticleCircle  particleController;
 boolean showFps =false;
 
 void setup() {
-  size(1280, 720, P3D);
+  size(1024, 768, P3D);
   frameRate(60);
 
   //5 x 6
@@ -54,7 +57,7 @@ void setup() {
   font = createFont("Inconsolata.otf", 12, true);
 
   //PGraphics
-  pg = createGraphics(1280, 720); 
+  pg = createGraphics(1024, 768); 
 
   //setupIMU
   setupIMU();
@@ -69,7 +72,11 @@ void setup() {
   oscSetup();
 
   //lightbang
+<<<<<<< HEAD
   bkgBang = new LightBang(200);
+=======
+  bkgBang = new LightBang(60);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 
 
   //cirlce
@@ -80,26 +87,50 @@ void setup() {
   particleController.id = 0;
   particleController.duration  =10*1000;
   particleController.reset();
+<<<<<<< HEAD
+=======
+
+  spout = new Spout(this);
+
+  // CREATE A NAMED SENDER
+  // A sender can be created now with any name.
+  // Otherwise a sender is created the first time
+  // "sendTexture" is called and the sketch
+  // folder name is used.  
+  spout.createSender("Spout Processing");
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 }
 
 
 void draw() {
   pg.beginDraw();
+<<<<<<< HEAD
   pg.fill(bkgBang.getColor(), 20);
+=======
+  pg.fill(bkgBang.getColor(), 50);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
   pg.rect(0, 0, width, height);
   pg.endDraw();
 
   //input data
-  displayData();
+  //displayData();
 
   //canon
   //visualizeCanon();
 
   //voices
+<<<<<<< HEAD
   displayVoices();
 
   if (grabController) {
     particleController.updateCenter(pitch*width, yaw*height);
+=======
+  displayVoices(pg);
+
+  if (grabController) {
+    particleController.updateCenter(pitch*width, yaw*height);
+    particleController.incCircles = map(roll, 0, 1, 0.01, 0.09);
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
     particleController.draw(pg);
     particleController.updateGrow();
   } else {
@@ -122,8 +153,8 @@ void draw() {
 
   //send IMU information
   if (abs(roll - pRoll)  > 0.05 ||  abs(pitch - pPitch)  > 0.05  ||  abs(yaw - pYaw)  > 0.05 ) {
-    //sendIMU("/dirxyz", yaw, pitch, roll);
-    println(imuStr);
+    sendIMU("/dirxyz", yaw, pitch, roll);
+    //println(imuStr);
   }
 
 
@@ -139,9 +170,20 @@ void draw() {
     stroke(255, 0, 0);
     text(frameRate, 50, 50);
   }
+<<<<<<< HEAD
 
   bkgBang.udpate();
   updateIMU();
+=======
+  
+    //input data
+  displayData();
+
+  bkgBang.udpate();
+  updateIMU();
+
+  spout.sendTexture();
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
 }
 
 void keyPressed() {
@@ -169,6 +211,15 @@ void keyPressed() {
     particleController.id = 0;
     particleController.duration  = 25*1000;
     particleController.reset();
+<<<<<<< HEAD
+=======
+
+    imuDisplayTime = millis();
+    imuDisplayLock = false;
+
+    voicesDisplayTime = millis();
+    voicesDisplayLock = false;
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
     print("controller: "+grabController);
   }
 }

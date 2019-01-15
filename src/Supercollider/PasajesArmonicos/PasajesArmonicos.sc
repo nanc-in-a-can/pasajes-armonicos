@@ -3,6 +3,12 @@ PasajesArmonicos {
 
 	*initialize {
 		var s = Server.local;
+
+		s.options.numBuffers = 1024 * 32;
+		s.options.numOutputBusChannels = 4;
+		s.options.device = "ASIO";
+		Can.defaultServerConfig;
+
 		s.boot;
 		s.waitForBoot({
 			var baseDir = thisProcess.nowExecutingPath.dirname;

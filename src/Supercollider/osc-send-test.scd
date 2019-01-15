@@ -18,7 +18,7 @@ var sender = NetAddr.new("127.0.0.1", 32000);
 		    var y = r.();
 		    var z = r.();
 			sender.sendMsg(\dirxyz, x, y, z);
-			0.3.wait;
+			4.wait;
 		})
 	}).play;
 thisProcess.openUDPPort(32000);

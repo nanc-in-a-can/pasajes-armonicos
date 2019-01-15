@@ -8,6 +8,13 @@ class LightBang {
 
   LightBang(float maxDuration) {
     this.maxDuration = maxDuration;
+<<<<<<< HEAD
+=======
+  }
+  
+  void updateDuration(float dur){
+    maxDuration = dur;
+>>>>>>> 017ea7fba39604e6762d378d06387107c5866e96
   }
 
   void udpate() {
