@@ -31,5 +31,7 @@ p.play;
 PasajesArmonicosPr.initialize;
 
 ~controls.tempoScale = 1
-// OSCFunc(_.postln, \pasaje, recvPort: 7778)
+OSCFunc(_.postln, \pasaje, recvPort: 7778)
 OSCFunc(_.postln, \json, recvPort: 32001)
+
+PasajesArmonicos.playDefault
