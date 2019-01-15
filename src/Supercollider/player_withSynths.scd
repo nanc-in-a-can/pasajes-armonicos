@@ -1,10 +1,3 @@
-//s.boot
-~controls = (tempoScale: 1, hamp: 1, vdensity: 1);
-//~controls.tempoScale = 1
-//~controls.hamp = 0.2
-//~controls.vdensity = 1
-//~tempoScale = 0.1;
-//~makeTaskPlayer.(\def, ~controls, ThePresetCan.pyramidCanon.canon).play
 (
 ~makeTaskPlayer = {|def, controls, canon|
 	var makeVoicesState = {|canon|
@@ -58,6 +51,7 @@
 		var numVoices = canon.size;
 		var finishedCanons = 0;
 		var globalNextSoundAt = 0;
+		~silencesOfThom.set(\gate, 0);
 		inf.do({|i|
 			var iterateVoices = globalNextSoundAt <= elapsed;
 
@@ -130,7 +124,13 @@
 				globalNextSoundAt = nextSoundsAt.minItem;
 			});
 
-			if(finishedCanons == numVoices, {player.stop});
+			if(finishedCanons == numVoices, {
+				player.stop;
+				~silencesTask = Task({
+					1.wait;
+					~silencesOfThom.set(\gate, 1);
+				}).play;
+			});
 
 			elapsed = elapsed+(1*controls.tempoScale); // update elapsed time, ~tempoScale changes the value by which `elapsed` is updated, by this, the "interal time of the canon" go faster or slower.  If ~tempoScale is > 1 it goes faster than it's original tempo, if < 1 it goes slower.
 

@@ -94,6 +94,11 @@ PasajesArmonicosPr {
 				);
 				~makeCanon.(pasaje);
 			}, \pasaje, recvPort: 7778);
+
+			Task({
+				5.wait;
+				~silencesOfThom = Synth(\silencesOfThom);
+			}).play;
 			"Pasajes Armónicos has been initialized!".postln;
 		})
 	}

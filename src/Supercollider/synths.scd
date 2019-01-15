@@ -92,3 +92,17 @@ SynthDef(\pasajes_PanAz, { |numChan=4, in1=50, in2=52, in3=48, out=99, amp=1, ga
 );
 
 
+(
+SynthDef(\silencesOfThom, {
+		| freq=100, ibuf= 0, offset=0.65, out=0, att=5, sust=1, rel=1, gate=1, amp=0.01, rq=0.01, which=0|
+	var sig, pitch, env;
+	env = EnvGen.ar(Env.adsr(att, 0.1, 0.5, rel),gate, doneAction:0);
+	pitch = freq;
+	sig = VOsc3.ar(ibuf+LFNoise2.ar(0.005, 1000, 2000), pitch+[0,1],pitch+[0.37,1.1],pitch+[0.43, -0.29], 0.33);
+	sig= RLPF.ar(sig, LFNoise2.ar(0.005, 3000, 9000), 0.1, 0.5);
+
+	// out mixer
+	Out.ar(out, sig*env*amp);
+
+}).add
+)

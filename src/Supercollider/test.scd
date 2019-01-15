@@ -25,11 +25,15 @@ p.pasaje = (//add your data to initialize the instalation
 
 p.play;
 //
-// NetAddr("127.0.0.1", 32000).sendMsg('/play');
+
 )
 
 PasajesArmonicosPr.initialize;
 
-~controls.tempoScale = 1
+NetAddr("127.0.0.1", 7778).sendMsg('/pasaje', JSON.stringify(~pasaje));
+NetAddr("127.0.0.1", 32000).sendMsg('/play');
+~controls.tempoScale = 20
 // OSCFunc(_.postln, \pasaje, recvPort: 7778)
 OSCFunc(_.postln, \json, recvPort: 32001)
+
+
