@@ -2,7 +2,7 @@ JSONArray  json;
 
 //defulta json path
 
-String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/Supercollider/../JSONs/1010-canon.json";
+String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/JSONs/20190114072341-canon.json";
 boolean doneReadingJson = false;
 
 void loadJson(String path) {

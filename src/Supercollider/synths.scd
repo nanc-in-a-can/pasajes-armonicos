@@ -1,6 +1,6 @@
 
 (
-SynthDef(\pasajesPluck, {| freq=220, coef=0.9, amp=1, pan=0, out=0, dur=0 |
+SynthDef(\pasajesPluck, {| freq=220, coef=0.9, amp=0.2, pan=0, out=0, dur=0 |
 	var sig, env;
 
 	sig= Pluck.ar(Saw.ar(freq*0.125), Impulse.ar(0), (freq*0.25).reciprocal, (freq*0.25).reciprocal, 1, coef, amp)*5;
@@ -70,14 +70,14 @@ SynthDef(\pasajes_combC2, {
 
 (
 // espacializador X // inputs: señal directa por 48, combC por 50 y distort por 52;
-SynthDef(\pasajes_PanAz, { |numChan=4, in1=50, in2=52, in3=48, out=99, amp=1, gate=1, cutFreq=9000, pos1=0, pos2=0, pos3=0|
+SynthDef(\pasajes_PanAz, { |numChan=4, in1=50, in2=52, in3=48, out=99, amp=1, gate=1, cutFreq=11000, pos1=0, pos2=0, pos3=0|
 	var sig1, sig2, sig3, env;
 
 	// Señal CombC1;
-	sig1= LPF.ar(In.ar(in1,1), cutFreq, 0.8)+ (In.ar(in1,1)*0.05);
+	sig1= LPF.ar(In.ar(in3,1), cutFreq, 0.8)+ (In.ar(in1,1)*0.05);
 	sig1= PanAz.ar(4, sig1,     ((pos1+pos2)*1)%2pi)*1;
 	// Señal CombC2;
-	sig2= LPF.ar(In.ar(in2,1), cutFreq, 0.9)+ (In.ar(in2,1)*0.05);
+	sig2= LPF.ar(In.ar(in3,1), cutFreq, 0.9)+ (In.ar(in2,1)*0.05);
 	sig2= PanAz.ar(4, sig2, ((pos2+pos3)*1.2+1)%2pi)*1;
 	// Señal Limpia;
 	sig3= LPF.ar(In.ar(in3,1), cutFreq, 0.9)+ (In.ar(in3,1)*0.05);
