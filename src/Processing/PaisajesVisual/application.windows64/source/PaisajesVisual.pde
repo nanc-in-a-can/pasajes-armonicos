@@ -31,9 +31,13 @@ PFont font;
 ArrayList<Canon> canons;
 
 // background bang
-BkgBang bkgBang;
+LightBang bkgBang;
 
+//general canon
 ArrayList<ParticleCircle> circles;
+
+//single form of view
+ParticleCircle  particleController;
 
 boolean showFps =false;
 
@@ -64,17 +68,24 @@ void setup() {
   //setup OSC
   oscSetup();
 
-  bkgBang = new BkgBang();
+  //lightbang
+  bkgBang = new LightBang(200);
 
+
+  //cirlce
   circles = new ArrayList<ParticleCircle>();
+
+  //center
+  particleController = new ParticleCircle(10000, width, height, 0, 0);
+  particleController.id = 0;
+  particleController.duration  =10*1000;
+  particleController.reset();
 }
 
 
 void draw() {
-  //background(bkgBang.getBack());
-
   pg.beginDraw();
-  pg.fill(0, 20);
+  pg.fill(bkgBang.getColor(), 20);
   pg.rect(0, 0, width, height);
   pg.endDraw();
 
@@ -87,16 +98,24 @@ void draw() {
   //voices
   displayVoices();
 
-  try {
-    for (ParticleCircle circle : circles) {
-      circle.draw(pg);
-      circle.updateGrow();
+  if (grabController) {
+    particleController.updateCenter(pitch*width, yaw*height);
+    particleController.draw(pg);
+    particleController.updateGrow();
+  } else {
+    try {
+      for (ParticleCircle circle : circles) {
+        circle.draw(pg);
+        circle.updateGrow();
+      }
+    }  
+    catch (java.util.ConcurrentModificationException exception) {
+    } 
+    catch (Throwable throwable) {
     }
-  }  
-  catch (java.util.ConcurrentModificationException exception) {
-  } 
-  catch (Throwable throwable) {
   }
+
+
 
 
   image(pg, 0, 0);
@@ -106,6 +125,8 @@ void draw() {
     //sendIMU("/dirxyz", yaw, pitch, roll);
     println(imuStr);
   }
+
+
 
   //check if we read the json file
   if (doneReadingJson) {
@@ -118,6 +139,9 @@ void draw() {
     stroke(255, 0, 0);
     text(frameRate, 50, 50);
   }
+
+  bkgBang.udpate();
+  updateIMU();
 }
 
 void keyPressed() {
@@ -132,5 +156,19 @@ void keyPressed() {
 
   if (key == 'f') {
     showFps = !showFps;
+  }
+
+  if (key == 'b') {
+    bkgBang.bang();
+  }
+
+  if (key == 'c') {
+    grabController= !grabController;
+    bkgBang.bang();
+
+    particleController.id = 0;
+    particleController.duration  = 25*1000;
+    particleController.reset();
+    print("controller: "+grabController);
   }
 }

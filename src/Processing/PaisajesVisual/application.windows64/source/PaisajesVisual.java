@@ -52,9 +52,13 @@ PFont font;
 ArrayList<Canon> canons;
 
 // background bang
-BkgBang bkgBang;
+LightBang bkgBang;
 
+//general canon
 ArrayList<ParticleCircle> circles;
+
+//single form of view
+ParticleCircle  particleController;
 
 boolean showFps =false;
 
@@ -85,17 +89,24 @@ public void setup() {
   //setup OSC
   oscSetup();
 
-  bkgBang = new BkgBang();
+  //lightbang
+  bkgBang = new LightBang(200);
 
+
+  //cirlce
   circles = new ArrayList<ParticleCircle>();
+
+  //center
+  particleController = new ParticleCircle(10000, width, height, 0, 0);
+  particleController.id = 0;
+  particleController.duration  =10*1000;
+  particleController.reset();
 }
 
 
 public void draw() {
-  //background(bkgBang.getBack());
-
   pg.beginDraw();
-  pg.fill(0, 20);
+  pg.fill(bkgBang.getColor(), 20);
   pg.rect(0, 0, width, height);
   pg.endDraw();
 
@@ -108,16 +119,24 @@ public void draw() {
   //voices
   displayVoices();
 
-  try {
-    for (ParticleCircle circle : circles) {
-      circle.draw(pg);
-      circle.updateGrow();
+  if (grabController) {
+    particleController.updateCenter(pitch*width, yaw*height);
+    particleController.draw(pg);
+    particleController.updateGrow();
+  } else {
+    try {
+      for (ParticleCircle circle : circles) {
+        circle.draw(pg);
+        circle.updateGrow();
+      }
+    }  
+    catch (java.util.ConcurrentModificationException exception) {
+    } 
+    catch (Throwable throwable) {
     }
-  }  
-  catch (java.util.ConcurrentModificationException exception) {
-  } 
-  catch (Throwable throwable) {
   }
+
+
 
 
   image(pg, 0, 0);
@@ -127,6 +146,8 @@ public void draw() {
     //sendIMU("/dirxyz", yaw, pitch, roll);
     println(imuStr);
   }
+
+
 
   //check if we read the json file
   if (doneReadingJson) {
@@ -139,6 +160,9 @@ public void draw() {
     stroke(255, 0, 0);
     text(frameRate, 50, 50);
   }
+
+  bkgBang.udpate();
+  updateIMU();
 }
 
 public void keyPressed() {
@@ -153,6 +177,20 @@ public void keyPressed() {
 
   if (key == 'f') {
     showFps = !showFps;
+  }
+
+  if (key == 'b') {
+    bkgBang.bang();
+  }
+
+  if (key == 'c') {
+    grabController= !grabController;
+    bkgBang.bang();
+
+    particleController.id = 0;
+    particleController.duration  = 25*1000;
+    particleController.reset();
+    print("controller: "+grabController);
   }
 }
 /*
@@ -197,6 +235,12 @@ float minY = 100000.0f;
 
 float maxZ = -10000.0f;
 float minZ =  100000.0f;
+
+boolean grabController = false;
+boolean lockController = false;
+boolean onceController = false;
+
+float pTimeIMU =0;
 
 /*
 setup Serial
@@ -249,13 +293,13 @@ public void serialEvent(Serial p) {
   if ((incoming.length() > 8)) {
     String[] list = split(incoming, " ");
     if ( (list.length > 0) && (list[0].equals("Orientation:")) ) {
-      
+
       //save the last value
       pRoll  = roll;
       pPitch = pitch;
       pYaw   = yaw;
-      
-      
+
+
       roll  = PApplet.parseFloat(list[3]); // Roll = Z
       pitch = PApplet.parseFloat(list[2]); // Pitch = Y 
       yaw   = PApplet.parseFloat(list[1]); // Yaw/Heading = X
@@ -284,8 +328,27 @@ public void serialEvent(Serial p) {
       yaw   = map(yaw, minX, maxX, 0.0f, 1.0f);
       pitch = abs(map(pitch, minY, maxY, 0.0f, 1.0f));
       roll  = map(roll, minZ, maxZ, 0.0f, 1.0f);
-   
-      
+
+
+      //if grab the controller change the mode of interaction
+      if (abs(roll - pRoll)  > 0.02f ||  abs(pitch - pPitch)  > 0.02f  ||  abs(yaw - pYaw)  > 0.02f ) {
+
+        if (!lockController) {
+          grabController = true;
+          onceController = true;
+        }
+        pTimeIMU = millis();
+
+        print("controller: "+grabController);
+      } else {
+
+        if (!lockController) {
+          grabController = false;
+        }
+        
+      }
+
+
       imuStr = String.format("%.2f", roll)+" "+String.format("%.2f", pitch) +" "+String.format("%.2f", yaw);
       //
       imuData.addLast(imuStr);
@@ -295,6 +358,30 @@ public void serialEvent(Serial p) {
     }
   }
 }
+
+public void updateIMU() {
+
+  if (onceController && grabController) {
+
+    bkgBang.bang();
+
+    particleController.id = 0;
+    particleController.duration  = 20*1000;
+    particleController.reset();
+
+    //single bang in 20 seconds
+    pTimeIMU = millis();
+    onceController = false;
+    lockController = true;
+  }
+
+  if (lockController) {
+    if (millis() - pTimeIMU > 5*1000) {
+      lockController = false;
+    }
+  }
+}
+
 
 //display 
 public void displayData() {
@@ -318,7 +405,7 @@ JSONArray  json;
 
 //defulta json path
 
-String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/Supercollider/../JSONs/1010-canon.json";
+String jsonPath = "C:/Users/thomas/Documents/pasajes-armonicos/src/JSONs/20190114072341-canon.json";
 boolean doneReadingJson = false;
 
 public void loadJson(String path) {
@@ -397,34 +484,40 @@ public void visualizeCanon() {
   catch (Throwable throwable) {
   }
 }
-class BkgBang{
-  
+class LightBang {
+
   float bkgColor =0;
-  
-  BkgBang(){
-    
+
+  float pTime  = 0;
+  float maxDuration; //100ms
+  boolean enable = false;
+
+  LightBang(float maxDuration) {
+    this.maxDuration = maxDuration;
+  }
+
+  public void udpate() {
+    if (enable) {
+      if (millis() - pTime >= maxDuration) {
+        bkgColor = 0;
+        enable = false;
+      }
+    }
   }
   
-  public float getBack(){
+  public boolean isEnable(){
+    return enable;
+  }
+
+  public float getColor() {
     return bkgColor;
   }
-  
-  public void updateBkg(){
-    
+
+  public void bang() {
+    bkgColor = 255;
+    pTime = millis();
+    enable = true;
   }
-  
-  public void drawBkg(){
-    
-  }
-  
-  public void enable(){
-    
-  }
-  
-  public void diable(){
-    
-  }
-  
 }
 /*
 
@@ -517,7 +610,7 @@ public void oscEvent(OscMessage theOscMessage) {
     int indexY = mapIndex/5%7;
 
     if (circles.isEmpty()) {
-      ParticleCircle circle  = new ParticleCircle(cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+      ParticleCircle circle  = new ParticleCircle(120, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
       circle.id = mapIndex;
       circle.duration  = dur*1000;
       circle.reset();
@@ -539,7 +632,7 @@ public void oscEvent(OscMessage theOscMessage) {
         circles.get(index).duration  = dur*1000;
         circles.get(index).reset();
       } else {
-        ParticleCircle circle  = new ParticleCircle(cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+        ParticleCircle circle  = new ParticleCircle(120, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
         circle.id = mapIndex;
         circle.duration  = dur*1000;
         circle.reset();
@@ -567,19 +660,19 @@ class Partcile{
   }
 }
 class ParticleCircle {
-  int n = 125;
+  int numParticles;
 
-  float[] m = new float[n];
-  float[] x = new float[n];
-  float[] y = new float[n];
-  float[] vx = new float[n];
-  float[] vy = new float[n];
+  float[] m;
+  float[] x;
+  float[] y;
+  float[] vx;
+  float[] vy;
 
-  float particleWidth  = 300;
-  float particleHeight = 300;
+  float particleWidth;
+  float particleHeight;
 
-  float posX = 50;
-  float posY = 50;
+  float posX;
+  float posY;
 
   int id = 0;
   boolean lock = false;
@@ -588,15 +681,20 @@ class ParticleCircle {
   float duration;
   float cTime = 0;
 
-  float maxCircles =0.05f;
-  float incCircles = 0.05f;
-  float incTime = 0.0f;
+  float maxCircles  = 0.08f;
+  float incCircles  = 0.08f;
+  float incTime     = 0.0f;
 
   float attractX;
   float attractY;
+  
+  float centerX = width/2.0f;
+  float centerY = height/2.0f;
 
+  LightBang lightBang;
 
-  ParticleCircle(float particleWidth, float particleHeight, float posX, float posY) {
+  ParticleCircle(int numParticles, float particleWidth, float particleHeight, float posX, float posY) {
+    this.numParticles = numParticles;
     this.particleWidth  = particleWidth;
     this.particleHeight = particleHeight;
 
@@ -605,12 +703,22 @@ class ParticleCircle {
 
     this.attractX = posX + particleWidth/2.0f;
     this.attractY = posY + particleHeight/2.0f;
+
+    lightBang = new LightBang(80);
+
+    m  = new float[numParticles];
+    x  = new float[numParticles];
+    y  = new float[numParticles];
+    vx = new float[numParticles];
+    vy = new float[numParticles];
+  }
+  
+  public void updateCenter(float posx, float posy){
+    centerX = posx;
+    centerY = posy;
   }
 
-
   public void updateGrow() {
-
-
     if (!lock) {
       float currentTime = millis();
       if (currentTime - cTime > duration) {
@@ -618,6 +726,7 @@ class ParticleCircle {
         println(currentTime - cTime+" "+duration);
         lock = true;
         incCircles = maxCircles;
+        println(incCircles);
       } else {
         incCircles += incTime;
       }
@@ -627,9 +736,16 @@ class ParticleCircle {
 
 
   public void draw(PGraphics pg) {
-    for (int i = 0; i < n; i++) {
-      float dx = width/2.0f - x[i];
-      float dy = height/2.0f - y[i];
+
+    if (lightBang.isEnable()) {
+      pg.beginDraw();
+      pg.fill(lightBang.getColor());
+      pg.rect(posX, posY, particleWidth, particleHeight);
+      pg.endDraw();
+    }
+    for (int i = 0; i < numParticles; i++) {
+      float dx = centerX - x[i];
+      float dy = centerY - y[i];
 
       float d = sqrtSemi(dx*dx + dy*dy);
       if (d < 1) d = 1;
@@ -642,18 +758,18 @@ class ParticleCircle {
 
     pg.beginDraw();
     pg.beginShape(POINTS);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < numParticles; i++) {
       x[i] += vx[i];
       y[i] += vy[i];
 
-      if (x[i] <= posX) x[i] = particleWidth + posX;
-      else if (x[i] >= particleWidth+ posX) x[i] = posX;
+      if (x[i] < posX) x[i] = particleWidth + posX;
+      else if (x[i] > particleWidth+ posX) x[i] = posX;
 
-      if (y[i] <= posY) y[i] = particleHeight + posY;
-      else if (y[i] >= particleHeight+ posY) y[i] = posY;
+      if (y[i] < posY) y[i] = particleHeight + posY;
+      else if (y[i] > particleHeight+ posY) y[i] = posY;
 
-      if (m[i] < 0) {
-        pg.stroke(155, 150);
+      if (m[i] < 0.0f) {
+        pg.stroke(155);
       } else { 
         pg.stroke(255, 150);
       }
@@ -662,6 +778,8 @@ class ParticleCircle {
     }
     pg.endShape();
     pg.endDraw();
+
+    lightBang.udpate();
   }
 
   public void reset() {
@@ -671,21 +789,22 @@ class ParticleCircle {
     lock = false;
 
     float fps_ms = 1000.0f/frameRate;
-    
+
     float dur_fsp = duration/fps_ms;
 
     incTime = maxCircles/dur_fsp;
     incCircles= 0;
-    
+
     println("fps:"+fps_ms+" "+frameRate);
     println("id: "+id+" inc: "+incTime);
     println(dur_fsp*duration+" "+duration);
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < numParticles; i++) {
       m[i] = randomGaussian() * 16;
       x[i] = random(particleWidth);
       y[i] = random(particleHeight);
     }
+    lightBang.bang();
   }
   /**
    * Semi-Accurate approximation for a floating-point square root.

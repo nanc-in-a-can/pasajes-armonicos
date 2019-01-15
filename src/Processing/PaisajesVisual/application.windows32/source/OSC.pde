@@ -89,7 +89,7 @@ void oscEvent(OscMessage theOscMessage) {
     int indexY = mapIndex/5%7;
 
     if (circles.isEmpty()) {
-      ParticleCircle circle  = new ParticleCircle(cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+      ParticleCircle circle  = new ParticleCircle(120, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
       circle.id = mapIndex;
       circle.duration  = dur*1000;
       circle.reset();
@@ -111,7 +111,7 @@ void oscEvent(OscMessage theOscMessage) {
         circles.get(index).duration  = dur*1000;
         circles.get(index).reset();
       } else {
-        ParticleCircle circle  = new ParticleCircle(cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
+        ParticleCircle circle  = new ParticleCircle(120, cirW, cirH, 0 + indexX*cirW, 0 + indexY*cirH);
         circle.id = mapIndex;
         circle.duration  = dur*1000;
         circle.reset();
