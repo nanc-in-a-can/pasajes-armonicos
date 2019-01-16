@@ -78,10 +78,10 @@ SynthDef(\pasajes_PanAz, { |numChan=4, in1=50, in2=52, in3=48, out=99, amp=1, ga
 	sig1= PanAz.ar(4, sig1,     ((pos1+pos2)*1)%2pi)*1;
 	// Señal CombC2;
 	sig2= LPF.ar(In.ar(in3,1), cutFreq, 0.9)+ (In.ar(in2,1)*0.05);
-	sig2= PanAz.ar(4, sig2, ((pos2+pos3)*1.2+1)%2pi)*1;
+	sig2= PanAz.ar(4, sig2, ((pos2+pos3)+1)%2pi)*1;
 	// Señal Limpia;
 	sig3= LPF.ar(In.ar(in3,1), cutFreq, 0.9)+ (In.ar(in3,1)*0.05);
-	sig3= PanAz.ar(4, sig3, ((pos1+pos3)*1.5+3)%2pi)*1;
+	sig3= PanAz.ar(4, sig3, ((pos1+pos3)+3)%2pi)*1;
 
 	env= EnvGen.kr(Env.adsr(0.2,1,0.1),gate, doneAction:0);
 

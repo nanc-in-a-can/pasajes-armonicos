@@ -21,7 +21,7 @@ var f1, f2;
 		z = msg[3];
 		~combC2.set(\delayTime, z.explin(0.000001,1, 0.01, 0.002));
 		~combC1.set(\delayTime, y.explin(0.000001,1, 0.01, 0.001));
-		~pan.set(\pos1, x.linlin(0,1, 0, 4), \pos2, y.linlin(0,1, 0, 3), \pos3, z.linlin(0,1, 0, 3.5));
+		~pan.set(\pos1, x.linlin(0,1, 0, 0.4), \pos2, y.linlin(0,1, 0, 0.3), \pos3, z.linlin(0,1, 0, 0.5));
 		~controls.vdensity = y;
 		~controls.hamp = x;
 		~controls.tempoScale = z.lincurve(0, 1, 0.3, 4, 2.5);

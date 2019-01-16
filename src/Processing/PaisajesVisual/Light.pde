@@ -9,6 +9,10 @@ class LightBang {
   LightBang(float maxDuration) {
     this.maxDuration = maxDuration;
   }
+  
+  void updateDuration(float dur){
+    maxDuration = dur;
+  }
 
   void udpate() {
     if (enable) {
