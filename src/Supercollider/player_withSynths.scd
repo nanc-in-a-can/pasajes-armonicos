@@ -111,7 +111,7 @@
 										bcpPercentage,
 										dur
 									]
-									++ if(notes.isArray, {notes}, {[notes]})
+									++ if(notes.isArray, {notes}, {[notes]}).asFloat
 								);
 
 							})
